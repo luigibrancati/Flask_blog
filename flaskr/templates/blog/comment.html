@@ -1,0 +1,23 @@
+{% extends 'blog/show_post.html' %}
+
+{% block title %}
+	{% if comment is not none %}
+		Edit comment #{{ comment['id'] }}"
+	{% else %}
+		Comment on "{{ post['title'] }}"
+	{% endif %}
+{% endblock %}
+
+{% block add_comment %}
+	<form method="POST">
+		<label for="body">Comment</label><br/>
+		<textarea name="body" id="body" required>{{ request.form['body'] or comment['body'] }}</textarea>
+		<input type="submit" value="Save">
+	</form>
+	{% if comment is not none %}
+		<hr>
+		<form action="{{ url_for('blog.delete_comment', comment_id=comment['id'])}}" method="POST">
+			<input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+		</form>
+	{% endif %}
+{% endblock %}

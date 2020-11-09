@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block header %}
+	<article class="post">
+		<header>
+			<div>
+				<h1>{% block title%}{{ post['title'] }}{% endblock %}</h1>
+				<div class="about">by {{ post['username'] }} on {{post['created'].strftime('%Y-%m-%d')}}</div>
+			</div>
+			{% if g.user['id'] == post['author_id'] %}
+				<a class="action" href="{{ url_for('blog.update', post_id=post['id']) }}">Edit</a>
+			{% endif %}
+		</header>
+	</article>
+{% endblock %}
+
+{% block nav %}
+<li><a href="{{ url_for('index') }}" class="button">Back to index</a>
+{% endblock %}
+
+{% block content %}
+	<article class="post">
+		<p class="body">{{ post['body'] }}</p>
+	</article>
+	<hr>
+	<div>
+		{% block add_comment %}
+			<a class="action" href="{{ url_for('blog.comment', post_id=post['id']) }}">Comment</a>
+		{% endblock %}
+	</div>
+	<hr>
+	{% for comment in comments %}
+		<article class="comment">
+			<header>
+				<div>
+					<h1>{{ comment['username'] }}</h1>
+					<div class="about">on {{ comment['created'].strftime('%Y-%m-%d') }}</div>
+				</div>
+				{% if g.user['id'] == comment['author_id'] %}
+					<a class="action" href="{{ url_for('blog.update_comment', comment_id=comment['id']) }}">Edit</a>
+				{% endif %}
+			</header>
+			<p class="comment_body">{{ comment['body'] }}</p>
+		</article>
+		{% if not loop.last %}
+			<hr>
+		{% endif %}
+	{% endfor %}
+{% endblock %}
