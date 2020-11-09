@@ -51,7 +51,7 @@ def get_comment(comment_id, check_author=True):
     return comment
 
 def get_comments(post_id):
-    get_post(post_id)
+    get_post(post_id,check_author=False)
     comments = get_db().execute(
         'SELECT c.id, c.body, c.created, c.author_id, c.post_id, username'
         ' FROM comments c JOIN users u ON c.author_id=u.id'
@@ -90,7 +90,7 @@ def create():
 @bp.route('/<int:post_id>/show_post', methods=('GET',))
 @login_required
 def show_post(post_id):
-    post = get_post(post_id)
+    post = get_post(post_id, check_author=False)
     comments = get_comments(post_id)
     return render_template('blog/show_post.html', post=post, comments=comments)
 
@@ -133,7 +133,7 @@ def delete(post_id):
 @bp.route('/<int:post_id>/comment', methods=('GET','POST'))
 @login_required
 def comment(post_id):
-    post = get_post(post_id)
+    post = get_post(post_id, check_author=False)
 
     if request.method == "POST":
         body = request.form['body']
@@ -182,7 +182,7 @@ def update_comment(comment_id):
             db.commit()
             return redirect(url_for('blog.show_post', post_id=post_id))
 
-    post = get_post(post_id)
+    post = get_post(post_id, check_author=False)
     comments = get_comments(post_id)
     return render_template('blog/comment.html', post=post, comments=comments, comment=comment)
 
