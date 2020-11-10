@@ -34,4 +34,8 @@ def create_app(test_config=None):
     app.register_blueprint(blog.bp)
     app.add_url_rule('/', endpoint='index') 
 
+    @app.shell_context_processor
+    def make_shell_context():
+        return {'db':db, 'User':models.User, 'Post':models.Post}
+
     return app
