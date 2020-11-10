@@ -1,13 +1,12 @@
 import click
 from flask import current_app, g
 from flask.cli import with_appcontext
-from flaskr import db, migrate
+from flaskr import db
 
 def get_db():
     if 'db' not in g:
         g.db = db
-        g.migrate = migrate
-    return (g.db, g.migrate)
+    return g.db
 
 @click.command('create-db')
 @with_appcontext
