@@ -3,13 +3,14 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from werkzeug.security import check_password_hash, generate_password_hash
-from flaskr.db import get_db
+from flaskr.db_commands import get_db
+from flaskr.forms import LoginForm
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @bp.route('/register', methods=('GET','POST'))
 def register():
-    if request.method == 'POST':
+    if request.method == 'POST' and form.validate_on_submit():
         username = request.form['username']
         password = request.form['password']
         db = get_db()
@@ -37,6 +38,8 @@ def register():
 
 @bp.route('/login', methods=('GET','POST'))
 def login():
+    form = LoginForm()
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -58,7 +61,7 @@ def login():
 
         flash(error)
 
-    return render_template('auth/login.html')
+    return render_template('auth/login.html', form=form)
 
 @bp.before_app_request
 def load_logged_in_user():

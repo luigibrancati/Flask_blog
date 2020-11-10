@@ -1,5 +1,10 @@
 import os
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+db = SQLAlchemy()
+migrate = Migrate(db)
 
 def create_app(test_config=None):
     #create and configure the app
@@ -21,15 +26,12 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    #a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-
-    from . import db
     db.init_app(app)
-
-    from . import auth, blog
+    migrate.init_app(app)
+    from . import db_commands
+    db_commands.init_commands(app)
+    
+    from . import auth, blog, models
     app.register_blueprint(auth.bp)
     app.register_blueprint(blog.bp)
     app.add_url_rule('/', endpoint='index') 
