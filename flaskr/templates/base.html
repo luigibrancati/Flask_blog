@@ -2,10 +2,11 @@
 <title>{% block title %}{% endblock %} - Bukkake</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
 <nav>
-	<h1>Bukkake</h1>
+	<h1><a href=" {{ url_for('index') }} ">Bukkake</a></h1>
 	<ul>
-		{% if g.user %}
-			<li><span>{{ g.user['username'] }}</span>
+		{% if not current_user.is_anonymous %}
+			<li><span>Hi, {{ current_user.username }}!</span>
+				<li><a href="{{ url_for('blog.user', username=current_user.username) }}">Profile</a>
 			<li><a href="{{url_for('auth.logout')}}" class="button">Log Out</a>
 		{% else %}
 			<li><a href="{{url_for('auth.register')}}" class="button">Register</a>

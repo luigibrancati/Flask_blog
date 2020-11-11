@@ -3,7 +3,7 @@
 {% block header %}
 	<h1>{% block title %}
 		{% if post is not none %}
-			Edit "{{ post['title'] }}"
+			Edit "{{ post.title }}"
 		{% else %}
 			New Post
 		{% endif %}
@@ -16,15 +16,26 @@
 
 {% block content %}
 	<form method="POST">
-		<label for="title">Title</label>
-		<input name="title" id="title" value="{{ request.form['title'] or post['title'] }}" required>
-		<label for="body">Body</label>
-		<textarea name="body" id="body">{{ request.form['body'] or post['body'] }}</textarea>
-		<input type="submit" value="Save">
+		{{ form.hidden_tag() }}
+		<p>
+			{{ form.title.label }}<br>
+			{{ form.title(size=50) }}<br>
+			{% for error in form.title.errors %}
+				<span class="error">[{{ error }}]</span>
+			{% endfor %}
+		</p>
+		<p>
+			{{ form.body.label }}<br>
+			{{ form.body(cols=50, rows=4) }}<br>
+			{% for error in form.body.errors %}
+				<span class="error">[{{ error }}]</span>
+			{% endfor %}
+		</p>
+		<p>{{ form.submit() }}</p>
 	</form>
 	{% if post is not none %}
 		<hr>
-		<form action="{{ url_for('blog.delete', post_id=post['id']) }}" method="POST">
+		<form action="{{ url_for('blog.delete', post_id=post.id) }}" method="POST">
 			<input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
 		</form>
 	{% endif %}
