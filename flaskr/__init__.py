@@ -9,7 +9,6 @@ from flask_login import LoginManager
 db = SQLAlchemy()
 login = LoginManager()
 
-
 def create_app(test_config=None):
     #create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -44,7 +43,7 @@ def create_app(test_config=None):
 
     @app.shell_context_processor
     def make_shell_context():
-        return {'db':db, 'User':models.User, 'Post':models.Post}
+        return {'db':db, 'User':models.User, 'Post':models.Post, 'Comment':models.Comment}
     
     @app.errorhandler(404)
     def not_found_error(e):
@@ -63,7 +62,6 @@ def create_app(test_config=None):
         '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
         file_handler.setLevel(logging.INFO)
         app.logger.addHandler(file_handler)
-
         app.logger.setLevel(logging.INFO)
         app.logger.info('Flaskr startup')
     

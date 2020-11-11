@@ -25,7 +25,50 @@
 {% endblock %}
 
 {% block content %}
-	{% for post in posts %}
-		{% include "blog/_post.html" %}	
-	{% endfor %}
+	<head>
+		<script type="text/javascript">
+			function activateTab(pageId) {
+					var tabCtrl = document.getElementById('tabCtrl');
+					var pageToActivate = document.getElementById(pageId);
+					for (var i = 0; i < tabCtrl.childNodes.length; i++) {
+							var node = tabCtrl.childNodes[i];
+							if (node.nodeType == 1) { /* Element */
+									node.style.display = (node == pageToActivate) ? 'block' : 'none';
+							}
+					}
+			}
+
+		</script>
+	</head>
+	<body>
+		<ul>
+			<li><a href="javascript:activateTab('Posts')">Posts</a>
+			<li><a href="javascript:activateTab('Comments')">Comments</a>
+		</ul>
+		<div id="tabCtrl">
+			<div id="Posts" style="display: block">
+				{% for post in posts %}
+					{% include "blog/_post.html" %}	
+					{% if not loop.last %}
+						<hr>
+					{% endif %}
+				{% endfor %}
+			</div>
+			<div id="Comments" style="display: none">
+				{% for comment in comments %}
+					<article class="post">
+						<header>
+							<h1>
+								Original Post: <a href="{{ url_for('blog.show_post', post_id=comment.original_post.id) }}">{{ comment.original_post.title }}</a>
+							</h1>
+						<header>
+					</article>
+					{% include "blog/_comment.html" %}	
+					{% if not loop.last %}
+						<hr>
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+	</body>
 {% endblock %}

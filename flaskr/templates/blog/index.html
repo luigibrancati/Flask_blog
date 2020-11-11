@@ -9,14 +9,7 @@
 
 {% block content %}
 	{% for post in posts %}
-		<article class="post">
-			<header>
-				{% include "blog/_post.html"%}	
-				{% if current_user.id == post.author.id %}
-					<a class="action" href="{{ url_for('blog.update', post_id=post.id) }}">Edit</a>
-				{% endif %}
-			</header>
-		</article>
+		{% include "blog/_post.html"%}	
 		{% if not loop.last %}
 			<hr>
 		{% endif %}

@@ -67,3 +67,10 @@ class EditPostForm(FlaskForm):
             if post is not None:
                 raise ValidationError("Please use a different title.")
 
+class CreateCommentForm(FlaskForm):
+    body = TextAreaField('Body', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+class EditCommentForm(FlaskForm):
+    body = TextAreaField('Body', validators=[DataRequired()])
+    submit = SubmitField('Submit')

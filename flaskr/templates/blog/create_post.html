@@ -10,10 +10,6 @@
 	{% endblock %}</h1>
 {% endblock %}
 
-{% block nav %}
-<li><a href="{{ url_for('index') }}" class="button">Back to index</a>
-{% endblock %}
-
 {% block content %}
 	<form method="POST">
 		{{ form.hidden_tag() }}

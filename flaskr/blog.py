@@ -4,7 +4,9 @@ from flask import (
 from werkzeug.exceptions import abort
 from flaskr import db
 from flaskr.models import User, Post, Comment
-from flaskr.forms import EditProfileForm, CreatePostForm, EditPostForm
+from flaskr.forms import (
+    EditProfileForm, CreatePostForm, EditPostForm, CreateCommentForm, EditCommentForm
+)
 from flask_login import login_required, current_user
 from datetime import datetime
 
@@ -22,7 +24,8 @@ def index():
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     posts = Post.query.filter_by(author=user).all()
-    return render_template('blog/user.html', user=user, posts=posts)
+    comments = Comment.query.filter_by(author=user).all()
+    return render_template('blog/user.html', user=user, posts=posts, comments=comments)
 
 #edit profile form
 @bp.route('/edit_profile/<username>', methods=('GET','POST'))
@@ -71,7 +74,7 @@ def create():
         db.session.commit()
         flash('Post created.')
         return redirect(url_for('blog.index'))
-    return render_template('blog/create.html', form=form, post=None)
+    return render_template('blog/create_post.html', form=form, post=None)
 
 @bp.route('/<int:post_id>/show_post', methods=('GET',))
 @login_required
@@ -83,7 +86,7 @@ def show_post(post_id):
 @bp.route('/<int:post_id>/update', methods=('GET','POST'))
 @login_required
 def update(post_id):
-    post = Post.query.filter_by(id=post_id).first_or_404()
+    post = get_post(post_id)
     form = EditPostForm(post.title)
     if form.validate_on_submit():
         if current_user != post.author:
@@ -94,77 +97,62 @@ def update(post_id):
         db.session.commit()
         flash("Your changes have been saved.")
         return redirect(url_for('blog.show_post', post_id=post_id))
-    return render_template('blog/create.html', form=form, post=post)
+    elif request.method == "GET":
+        form.title.data = post.title
+        form.body.data = post.body
+    return render_template('blog/create_post.html', form=form, post=post)
 
 @bp.route('/<int:post_id>/delete', methods=('POST',))
 @login_required
 def delete(post_id):
     post = get_post(post_id)
+    comments = get_comments(post_id)
     db.session.delete(post)
+    for comment in comments:
+        db.session.delete(comment)
     db.session.commit()
     return redirect(url_for('blog.index'))
 
 @bp.route('/<int:post_id>/comment', methods=('GET','POST'))
 @login_required
 def comment(post_id):
+    print('creating comment.')
+    form = CreateCommentForm()
     post = get_post(post_id, check_author=False)
-
-    if request.method == "POST":
-        body = request.form['body']
-        error = None
-
-        if not body:
-            error = 'Body is required.'
-
-        if error is not None:
-            flash(error)
-        else:
-            db = get_db()
-            db.execute(
-                'INSERT INTO comments (post_id, body, author_id)'
-                ' VALUES (?, ?, ?)',
-                (post_id, body, g.user['id'])
-            )
-            db.commit()
-            return redirect(url_for('blog.show_post', post_id=post_id))
-    
+    if form.validate_on_submit():
+        comment = Comment(body=form.body.data, author=current_user, original_post=post)
+        db.session.add(comment)
+        db.session.commit()
+        flash('Comment created.')
+        return redirect(url_for('blog.show_post', post_id=post_id))
     comments = get_comments(post_id)
-    return render_template('blog/comment.html', post=post, comments=comments, comment=None)
+    return render_template('blog/create_comment.html', form=form, post=post, comments=comments, comment=None)
 
 @bp.route('/<int:comment_id>/update_comment', methods=('GET','POST'))
 @login_required
 def update_comment(comment_id):
     comment = get_comment(comment_id)
-    post_id = comment['post_id']
-
-    if request.method == "POST":
-        body = request.form['body']
-        error = None
-
-        if not body:
-            error = 'Body is required.'
-
-        if error is not None:
-            flash(error)
-        else:
-            db = get_db()
-            db.execute(
-                'UPDATE comments SET body=?'
-                ' WHERE id=?',
-                (body, comment_id)
-            )
-            db.commit()
+    post_id = comment.original_post.id
+    form = EditCommentForm()
+    if form.validate_on_submit():
+        if current_user != comment.author:
+            flash("You can't edit a comment that is not yours!")
             return redirect(url_for('blog.show_post', post_id=post_id))
-
+        comment.body = form.body.data
+        db.session.commit()
+        flash('Your changes have been made.')
+        return redirect(url_for('blog.show_post', post_id=post_id))
+    elif request.method == "GET":
+        form.body.data = comment.body
     post = get_post(post_id, check_author=False)
     comments = get_comments(post_id)
-    return render_template('blog/comment.html', post=post, comments=comments, comment=comment)
+    return render_template('blog/create_comment.html', form=form, post=post, comments=comments, comment=comment)
 
 @bp.route('/<int:comment_id>/delete_comment', methods=('POST',))
 @login_required
 def delete_comment(comment_id):
-    post_id = get_comment(comment_id)['post_id']
-    db = get_db()
-    db.execute('DELETE FROM comments WHERE id=?', (comment_id,))
-    db.commit()
+    comment = get_comment(comment_id)
+    post_id = comment.original_post.id
+    db.session.delete(comment)
+    db.session.commit()
     return redirect(url_for('blog.show_post', post_id=post_id))
