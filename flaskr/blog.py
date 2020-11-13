@@ -15,7 +15,7 @@ bp = Blueprint('blog', __name__)
 #index page
 @bp.route('/')
 def index():
-    posts = Post.query.all()
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
     return render_template('blog/index.html', posts=posts)
 
 #show user profile page
@@ -61,7 +61,7 @@ def get_comment(comment_id, check_author=True):
 
 def get_comments(post_id):
     get_post(post_id,check_author=False)
-    comments = Comment.query.filter_by(post_id=post_id).all()
+    comments = Comment.query.filter_by(post_id=post_id).order_by(Comment.timestamp.desc()).all()
     return comments
 
 @bp.route('/create', methods=('GET','POST'))
