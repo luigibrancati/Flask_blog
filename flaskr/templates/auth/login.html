@@ -16,7 +16,7 @@
 		</p>
 		<p>
 			{{ form.password.label }}<br>
-			{{ form.password(size=32) }}
+			{{ form.password(size=32) }}<br>
 			{% for error in form.password.errors %}
 				<span class="error">[{{ error }}]</span>
 			{% endfor %}

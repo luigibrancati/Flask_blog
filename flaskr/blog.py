@@ -116,7 +116,6 @@ def delete(post_id):
 @bp.route('/<int:post_id>/comment', methods=('GET','POST'))
 @login_required
 def comment(post_id):
-    print('creating comment.')
     form = CreateCommentForm()
     post = get_post(post_id, check_author=False)
     if form.validate_on_submit():

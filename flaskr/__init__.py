@@ -31,7 +31,7 @@ def create_app(test_config=None):
     db.init_app(app)
     migrate = Migrate(app, db)
     login.init_app(app)
-    login.login_view = 'login'
+    login.login_view = 'auth.login'
 
     from . import db_commands
     db_commands.init_commands(app)

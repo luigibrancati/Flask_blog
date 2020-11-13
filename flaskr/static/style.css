@@ -13,7 +13,9 @@ body {
 h1 {
 	font-family: serif;
 	color: #377ba8;
-	margin: 1rem 0;
+	margin: .2rem 0;
+	padding: 0;
+	font-size: 1.3rem;
 }
 
 a {
@@ -61,7 +63,7 @@ nav ul li a.button{
 }
 
 .content { 
-	padding: 0 1rem 1rem; 
+	padding: 0.5rem 1rem 1rem;
 }
 
 .content > header { 
@@ -99,7 +101,7 @@ nav ul li a.button{
 }
 
 .post > header h1 { 
-	font-size: 1.5em; 
+	font-size: 1.8em; 
 	margin-bottom: 0; 
 }
 
@@ -143,4 +145,8 @@ input.danger {
 input[type=submit] { 
 	align-self: start; 
 	min-width: 10em; 
+}
+
+.error {
+	color: #cc2f2e;
 }
