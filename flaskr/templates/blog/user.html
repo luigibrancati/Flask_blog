@@ -25,28 +25,13 @@
 {% endblock %}
 
 {% block content %}
-	<head>
-		<script type="text/javascript">
-			function activateTab(pageId) {
-					var tabCtrl = document.getElementById('tabCtrl');
-					var pageToActivate = document.getElementById(pageId);
-					for (var i = 0; i < tabCtrl.childNodes.length; i++) {
-							var node = tabCtrl.childNodes[i];
-							if (node.nodeType == 1) { /* Element */
-									node.style.display = (node == pageToActivate) ? 'block' : 'none';
-							}
-					}
-			}
-
-		</script>
-	</head>
 	<body>
-		<ul>
-			<li><a href="javascript:activateTab('Posts')">Posts</a>
-			<li><a href="javascript:activateTab('Comments')">Comments</a>
-		</ul>
-		<div id="tabCtrl">
-			<div id="Posts" style="display: block">
+		<div class="tab">
+			<button class="tablinks" onclick="activateTab(event, 'Posts')" id="PostButton">Posts</a>
+			<button class="tablinks" onclick="activateTab(event, 'Comments')">Comments</a>
+		</div>
+		<div>
+			<div id="Posts" class="tabcontent">
 				{% for post in posts %}
 					{% include "blog/_post.html" %}	
 					{% if not loop.last %}
@@ -54,7 +39,7 @@
 					{% endif %}
 				{% endfor %}
 			</div>
-			<div id="Comments" style="display: none">
+			<div id="Comments" class="tabcontent">
 				{% for comment in comments %}
 					<article class="post">
 						<header>
@@ -70,5 +55,24 @@
 				{% endfor %}
 			</div>
 		</div>
+		<script type="text/javascript">
+			function activateTab(evt, pageId) {
+				var i, tabcontent, tablinks;
+				tabcontent = document.getElementsByClassName("tabcontent");
+				for (i = 0; i < tabcontent.length; i++) {
+					tabcontent[i].style.display = "none";
+				}
+
+				tablinks = document.getElementsByClassName("tablinks");
+				for (i = 0; i < tablinks.length; i++) {
+					tablinks[i].className = tablinks[i].className.replace(" active", "");
+				}
+
+				document.getElementById(pageId).style.display = "block";
+				evt.currentTarget.className += " active";
+			}
+
+			document.getElementById("PostButton").click()
+		</script>
 	</body>
 {% endblock %}
