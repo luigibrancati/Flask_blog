@@ -11,14 +11,14 @@
 							<h1>{% block title%}{{ post.title }}{% endblock %}</h1>
 							<div class="about">by <a href="{{ url_for('blog.user', username=post.author.username) }}">{{ post.author.username }}</a> on {{post.timestamp.strftime('%d-%m-%Y %H:%M')}}</div>
 						</div>
+						{% if current_user == post.author %}
+							<a class="action" href="{{ url_for('blog.update', post_id=post.id) }}">Edit</a>
+						{% endif %}
 					</td>
 				</tr>
 			</table>
 		</header>
 	</article>
-	{% if current_user == post.author %}
-			<a class="action" href="{{ url_for('blog.update', post_id=post.id) }}">Edit</a>
-	{% endif %}
 {% endblock %}
 
 {% block content %}
