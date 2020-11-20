@@ -12,7 +12,7 @@
 							<div class="about">by <a href="{{ url_for('blog.user', username=post.author.username) }}">{{ post.author.username }}</a> on {{post.timestamp.strftime('%d-%m-%Y %H:%M')}}</div>
 						</div>
 						{% if current_user == post.author %}
-							<a class="action" href="{{ url_for('blog.update', post_id=post.id) }}">Edit</a>
+							<form action="{{ url_for('blog.update', post_id=post.id) }}"><button type="submit">Edit</button></form>
 						{% endif %}
 					</td>
 				</tr>
@@ -28,14 +28,14 @@
 	<hr>
 	<div>
 		{% block add_comment %}
-			<a class="action" href="{{ url_for('blog.comment', post_id=post.id) }}">Comment</a>
+			<form action="{{ url_for('blog.comment', post_id=post.id) }}"><button type="submit">Comment</button></form>
 		{% endblock %}
 	</div>
 	<hr>
 	{% for comment in comments %}
 		{% include "blog/_comment.html" %}	
 		{% if current_user == comment.author %}
-			<a class="action" href="{{ url_for('blog.update_comment', comment_id=comment.id) }}">Edit</a>
+			<form action="{{ url_for('blog.update_comment', comment_id=comment.id) }}"><button type="submit">Edit</button></form>
 		{% endif %}
 		{% if not loop.last %}
 			<hr>
