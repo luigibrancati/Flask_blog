@@ -60,7 +60,6 @@ nav ul li button, nav ul li span, header .action {
 button, input[type=submit] {
 	margin: 2px;
 	color: #377ba8;
-	max-width: 100px;
 	max-height: 40px;
 }
 
