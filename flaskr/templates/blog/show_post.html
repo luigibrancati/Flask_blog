@@ -3,6 +3,7 @@
 {% block header %}{% endblock %}
 
 {% block content %}
+<div class="wrapperpadding">
 	<article class="post">
 		<header>
 			<table>
@@ -22,7 +23,9 @@
 		</header>
 		<p class="body">{{ post.body }}</p>
 	</article>
+	</div>
 	<hr class="comment_sep">
+	<div class="wrapperpadding">
 	<article class="Comments">
 		<header>
 			<h1>Comments</h1>
@@ -40,4 +43,5 @@
 			{% endif %}
 		{% endfor %}
 	</article>
+	</div>
 {% endblock %}

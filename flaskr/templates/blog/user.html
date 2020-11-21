@@ -26,6 +26,7 @@
 
 {% block content %}
 	<body>
+	<div class="wrapperpadding">
 		<div class="tab">
 			<button class="tablinks" onclick="activateTab(event, 'Posts')" id="PostButton">Posts</a>
 			<button class="tablinks" onclick="activateTab(event, 'Comments')">Comments</a>
@@ -74,5 +75,6 @@
 
 			document.getElementById("PostButton").click()
 		</script>
+		</div>
 	</body>
 {% endblock %}
