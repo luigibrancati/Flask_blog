@@ -25,6 +25,10 @@
 			{{ form.remember_me() }} {{ form.remember_me.label }}
 		</p>
 		<p>{{ form.submit() }}</p>
-		<p>New User? <form action="{{ url_for('auth.register') }}"><button type="submit">Register</button></form></p>
+	</form>
+	<form action="{{ url_for('auth.register') }}">
+		<p>
+			<label for="register">New user?</label> {{ form.register() }}
+		</p>
 	</form>
 {% endblock %}
