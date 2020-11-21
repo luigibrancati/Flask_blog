@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+<article class="registerform">
 	<form method="POST">
 		{{ form.hidden_tag() }}
 		<p>
@@ -37,4 +38,5 @@
 		</p>
 		<p>{{ form.submit() }}</p>
 	</form>
+</article>
 {% endblock %}

@@ -79,6 +79,7 @@ input[type=submit] {
 	display: flex; 
 	align-items: center; 
 	margin: 1rem 0 0.25rem 0; 
+	padding: 0 1rem 0 1rem;
 }
 
 .content > header h1, .content > header button { 
@@ -116,7 +117,7 @@ input[type=submit] {
 	border: 1px solid #377ba8; 
 }
 
-.post {
+.post, .Comments, .registerform, .loginform {
 	padding: 0.5rem 1rem 1rem;
 }
 
@@ -124,10 +125,6 @@ input[type=submit] {
 	display: flex; 
 	align-items: last baseline; 
 	font-size: 0.85em; 
-}
-
-.Comments {
-	padding: 0.5rem 1rem 1rem;
 }
 
 .comment > header { 
@@ -185,6 +182,7 @@ footer p {
   overflow: hidden;
   border-bottom: 1px solid #377ba8;
   background-color: inherit;
+	margin: 0.5rem 1rem 0.5rem 1rem;
 }
 
 /* Style the buttons inside the tab */

@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+<article class="loginform">	
 	<form method="POST" novalidate>
 		{{ form.hidden_tag() }}
 		<p>
@@ -31,4 +32,5 @@
 			<label for="register">New user?</label> {{ form.register() }}
 		</p>
 	</form>
+</article>
 {% endblock %}
