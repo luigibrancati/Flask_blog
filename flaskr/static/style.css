@@ -74,10 +74,6 @@ input[type=submit] {
 	min-width: 8em; 
 }
 
-.content { 
-	padding: 0.5rem 1rem 1rem;
-}
-
 .content > header { 
 	border-bottom: 1px solid lightgray; 
 	display: flex; 
@@ -120,10 +116,18 @@ input[type=submit] {
 	border: 1px solid #377ba8; 
 }
 
+.post {
+	padding: 0.5rem 1rem 1rem;
+}
+
 .post > header { 
 	display: flex; 
 	align-items: last baseline; 
 	font-size: 0.85em; 
+}
+
+.Comments {
+	padding: 0.5rem 1rem 1rem;
 }
 
 .comment > header { 
@@ -141,6 +145,11 @@ input[type=submit] {
 	margin-bottom: 0; 
 }
 
+hr.comment_sep {
+	color: #eee;
+	border: 8px solid;
+}
+
 .about { 
 	color: slategray; 
 	font-style: italic; 
@@ -148,10 +157,27 @@ input[type=submit] {
 
 .post .body { 
 	white-space: pre-line; 
+	font-size: 1.1em;
+}
+
+.comment .comment_body {
+	font-size: 0.9em;
 }
 
 .error {
 	color: #cc2f2e;
+}
+
+footer {
+	background-color: #ededed;
+	display: grid;
+	text-align: center;
+}
+
+footer p {
+	color: slategray;
+	font-style: italic;
+	font-size: 0.6rem;
 }
 
 /* Style the tab */
