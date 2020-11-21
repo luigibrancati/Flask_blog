@@ -37,6 +37,7 @@ nav {
 nav h1 {
 	flex: auto;
 	margin: 0;
+	font-size: 1.8rem;
 }
 
 nav h1 a { 
@@ -52,15 +53,25 @@ nav ul {
 	align-items: center;
 }
 
-nav ul li button, nav ul li span, header .action { 
-	display: block; 
-	padding: 0.5rem; 
+nav ul li button, nav ul li span, header .action, input[type=submit] { 
+	display: inline-block; 
+	padding: 0.4em; 
 }
 
 button, input[type=submit] {
 	margin: 2px;
 	color: #377ba8;
-	max-height: 40px;
+	line-height: 1em;
+	font-weight: bold;
+}
+
+input.danger { 
+	color: #cc2f2e;
+}
+
+input[type=submit] { 
+	align-self: start; 
+	min-width: 8em; 
 }
 
 .content { 
@@ -137,17 +148,6 @@ button, input[type=submit] {
 
 .post .body { 
 	white-space: pre-line; 
-}
-
-	
-
-input.danger { 
-	color: #cc2f2e;
-}
-
-input[type=submit] { 
-	align-self: start; 
-	min-width: 10em; 
 }
 
 .error {
