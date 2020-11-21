@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
-{% block header %}
+{% block header %}{% endblock %}
+
+{% block content %}
 	<article class="post">
 		<header>
 			<table>
@@ -12,33 +14,30 @@
 							<div class="about">by <a href="{{ url_for('blog.user', username=post.author.username) }}">{{ post.author.username }}</a> on {{post.timestamp.strftime('%d-%m-%Y %H:%M')}}</div>
 						</div>
 						{% if current_user == post.author %}
-							<form action="{{ url_for('blog.update', post_id=post.id) }}"><button type="submit">Edit</button></form>
+							<form action="{{ url_for('blog.update', post_id=post.id) }}"><button type="submit">Edit Post</button></form>
 						{% endif %}
 					</td>
 				</tr>
 			</table>
 		</header>
-	</article>
-{% endblock %}
-
-{% block content %}
-	<article class="post">
 		<p class="body">{{ post.body }}</p>
 	</article>
-	<hr>
-	<div>
-		{% block add_comment %}
-			<form action="{{ url_for('blog.comment', post_id=post.id) }}"><button type="submit">Comment</button></form>
-		{% endblock %}
-	</div>
-	<hr>
-	{% for comment in comments %}
-		{% include "blog/_comment.html" %}	
-		{% if current_user == comment.author %}
-			<form action="{{ url_for('blog.update_comment', comment_id=comment.id) }}"><button type="submit">Edit</button></form>
-		{% endif %}
-		{% if not loop.last %}
-			<hr>
-		{% endif %}
-	{% endfor %}
+	<hr class="comment_sep">
+	<article class="Comments">
+		<header>
+			<h1>Comments</h1>
+			<div>
+				{% block add_comment %}
+					<form action="{{ url_for('blog.comment', post_id=post.id) }}"><button type="submit">Add a comment</button></form>
+				{% endblock %}
+			</div>
+		</header>
+		<hr>
+		{% for comment in comments %}
+			{% include "blog/_comment.html" %}	
+			{% if not loop.last %}
+				<hr>
+			{% endif %}
+		{% endfor %}
+	</article>
 {% endblock %}
