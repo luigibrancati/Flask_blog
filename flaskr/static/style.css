@@ -74,12 +74,17 @@ input[type=submit] {
 	min-width: 8em; 
 }
 
+.wrapperpadding, .content > header {
+	padding: 0.5rem 1rem 1rem;
+}
+
 .content > header { 
 	border-bottom: 1px solid lightgray; 
 	display: flex; 
 	align-items: center; 
 	margin: 1rem 0 0.25rem 0; 
-	padding: 0 1rem 0 1rem;
+	padding-top: 0;
+	padding-bottom: 0;
 }
 
 .content > header h1, .content > header button { 
@@ -115,10 +120,6 @@ input[type=submit] {
 	padding: 1em; 
 	background: #cae6f6; 
 	border: 1px solid #377ba8; 
-}
-
-.post, .Comments, .registerform, .loginform {
-	padding: 0.5rem 1rem 1rem;
 }
 
 .post > header { 
@@ -182,7 +183,8 @@ footer p {
   overflow: hidden;
   border-bottom: 1px solid #377ba8;
   background-color: inherit;
-	margin: 0.5rem 1rem 0.5rem 1rem;
+	margin: 0;
+	margin-bottom: 0.5em;
 }
 
 /* Style the buttons inside the tab */
