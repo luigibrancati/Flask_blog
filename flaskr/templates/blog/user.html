@@ -10,6 +10,9 @@
 				{% if user.about_me %}
 					<p><b>About me:</b> {{user.about_me}}</p>
 				{% endif %}
+				{% if user.email %}
+					<p><b>Email:</b> {{user.email}}</p>
+				{% endif %}
 				{% if user.created %}
 					<p><b>Created:</b> {{user.created.strftime('%d-%m-%Y %H:%M')}}</p>
 				{% endif %}
