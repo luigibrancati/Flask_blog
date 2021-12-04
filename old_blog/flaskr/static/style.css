@@ -1,0 +1,224 @@
+html {
+	font-family: sans-serif;
+	background: #eee;
+	padding: 1rem;
+}
+
+body {
+	max-width: 960px;
+	margin: 0 auto;
+	background: white;
+}
+
+h1 {
+	font-family: serif;
+	color: #377ba8;
+	margin: .2rem 0;
+	padding: 0;
+	font-size: 1.3rem;
+}
+
+a {
+	color: #377ba8;
+}
+
+hr {
+	border: none;
+	border-top: 1px solid lightgray;
+}
+
+nav {
+	background: lightgray;
+	display: flex;
+	align-items: center;
+	padding: 0.5rem;
+}
+
+nav h1 {
+	flex: auto;
+	margin: 0;
+	font-size: 1.8rem;
+}
+
+nav h1 a { 
+	text-decoration: none; 
+	padding: 0.25rem 0.5rem; 
+}
+
+nav ul { 
+	display: flex; 
+	list-style: none; 
+	margin: 0; 
+	padding: 0; 
+	align-items: center;
+}
+
+nav ul li button, nav ul li span, header .action, input[type=submit] { 
+	display: inline-block; 
+	padding: 0.4em; 
+}
+
+button, input[type=submit] {
+	margin: 2px;
+	color: #377ba8;
+	line-height: 1em;
+	font-weight: bold;
+}
+
+input.danger { 
+	color: #cc2f2e;
+}
+
+input[type=submit] { 
+	align-self: start; 
+	min-width: 8em; 
+}
+
+.wrapperpadding, .content > header {
+	padding: 0.5rem 1rem 1rem;
+}
+
+.content > header { 
+	border-bottom: 1px solid lightgray; 
+	display: flex; 
+	align-items: center; 
+	margin: 1rem 0 0.25rem 0; 
+	padding-top: 0;
+	padding-bottom: 0;
+}
+
+.content > header h1, .content > header button { 
+	flex: auto; 
+}
+
+.content:last-child { 
+	margin-bottom: 0; 
+}
+
+.content form.newcontent { 
+	margin: 1em 0; 
+	display: flex; 
+	flex-direction: column; 
+}
+
+.content label { 
+	font-weight: bold; 
+	margin-bottom: 0.5em; 
+}
+
+.content input, .content textarea { 
+	margin-bottom: 1em; 
+}
+
+.content textarea { 
+	min-height: 12em; 
+	resize: vertical; 
+}
+
+.flash { 
+	margin: 1em 0; 
+	padding: 1em; 
+	background: #cae6f6; 
+	border: 1px solid #377ba8; 
+}
+
+.post > header { 
+	display: flex; 
+	align-items: last baseline; 
+	font-size: 0.85em; 
+}
+
+.comment > header { 
+	display: flex; 
+	align-items: last baseline; 
+	font-size: 0.85em; 
+}
+
+.post > header > div:first-of-type { 
+	flex: auto; 
+}
+
+.post > header h1 { 
+	font-size: 1.8em; 
+	margin-bottom: 0; 
+}
+
+hr.comment_sep {
+	color: #eee;
+	border: 8px solid;
+}
+
+.about { 
+	color: slategray; 
+	font-style: italic; 
+}
+
+.post .body { 
+	white-space: pre-line; 
+	font-size: 1.1em;
+}
+
+.comment .comment_body {
+	font-size: 0.9em;
+}
+
+.error {
+	color: #cc2f2e;
+}
+
+footer {
+	background-color: #ededed;
+	display: grid;
+	text-align: center;
+}
+
+footer p {
+	color: slategray;
+	font-style: italic;
+	font-size: 0.6rem;
+}
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border-bottom: 1px solid #377ba8;
+  background-color: inherit;
+	margin: 0;
+	margin-bottom: 0.5em;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+	margin-top: 0.4em;
+	margin-bottom: 0;
+  background-color: inherit;
+	border: 1px solid lightgray;
+	border-bottom: 0px;
+  float: left;
+  outline: none;
+  cursor: pointer;
+  padding: 0.2em 0.3em;
+  transition: 0.3s;
+  font-size: large;
+}
+
+.tab button:first-of-type {
+	margin-left: 0;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #cae6e5;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #cae6f6;
+	border: 1px solid #377ba8;
+	border-bottom: 0px;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+}

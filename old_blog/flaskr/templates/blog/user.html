@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block header %}
+		<table>
+		<tr valign="top">
+			<td><img src="{{ user.avatar(128) }}"></td>
+			<td>
+				<div>
+				<h1>{% block title %}{{ user.username }} - Profile{% endblock %}</h1>
+				{% if user.about_me %}
+					<p><b>About me:</b> {{user.about_me}}</p>
+				{% endif %}
+				{% if user.email %}
+					<p><b>Email:</b> {{user.email}}</p>
+				{% endif %}
+				{% if user.created %}
+					<p><b>Created:</b> {{user.created.strftime('%d-%m-%Y %H:%M')}}</p>
+				{% endif %}
+				{% if user.last_seen %}
+					<p><b>Last seen on:</b> {{user.last_seen.strftime('%d-%m-%Y %H:%M')}}</p>
+				{% endif %}
+				{% if current_user.id == user.id %}
+				<p><a href="{{ url_for('blog.edit_profile', username=user.username) }}">Edit Profile</a></p>
+				{% endif %}
+			</td>
+		</tr>
+	</table>
+{% endblock %}
+
+{% block content %}
+	<body>
+	<div class="wrapperpadding">
+		<div class="tab">
+			<button class="tablinks" onclick="activateTab(event, 'Posts')" id="PostButton">Posts</a>
+			<button class="tablinks" onclick="activateTab(event, 'Comments')">Comments</a>
+		</div>
+		<div>
+			<div id="Posts" class="tabcontent">
+				{% for post in posts %}
+					{% include "blog/_post.html" %}	
+					{% if not loop.last %}
+						<hr>
+					{% endif %}
+				{% endfor %}
+			</div>
+			<div id="Comments" class="tabcontent">
+				<article class="Comments">
+					{% for comment in comments %}
+						<header>
+							<h1>
+								Original Post: <a href="{{ url_for('blog.show_post', post_id=comment.original_post.id) }}">{{ comment.original_post.title }}</a>
+							</h1>
+						<header>
+					{% include "blog/_comment.html" %}	
+					{% if not loop.last %}
+						<hr>
+					{% endif %}
+				{% endfor %}
+				</article>
+			</div>
+		</div>
+		<script type="text/javascript">
+			function activateTab(evt, pageId) {
+				var i, tabcontent, tablinks;
+				tabcontent = document.getElementsByClassName("tabcontent");
+				for (i = 0; i < tabcontent.length; i++) {
+					tabcontent[i].style.display = "none";
+				}
+
+				tablinks = document.getElementsByClassName("tablinks");
+				for (i = 0; i < tablinks.length; i++) {
+					tablinks[i].className = tablinks[i].className.replace(" active", "");
+				}
+
+				document.getElementById(pageId).style.display = "block";
+				evt.currentTarget.className += " active";
+			}
+
+			document.getElementById("PostButton").click()
+		</script>
+		</div>
+	</body>
+{% endblock %}

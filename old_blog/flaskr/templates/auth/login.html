@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block header %}
+<h1>{% block title %}Login{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="wrapperpadding">	
+	<form method="POST" novalidate>
+		{{ form.hidden_tag() }}
+		<p>
+			{{ form.username.label }}<br>
+			{{ form.username(size=32) }}<br>
+			{% for error in form.username.errors %}
+				<span class="error">[{{ error }}]</span>
+			{% endfor %}
+		</p>
+		<p>
+			{{ form.password.label }}<br>
+			{{ form.password(size=32) }}<br>
+			{% for error in form.password.errors %}
+				<span class="error">[{{ error }}]</span>
+			{% endfor %}
+		</p>
+		<p>
+			{{ form.remember_me() }} {{ form.remember_me.label }}
+		</p>
+		<p>{{ form.submit() }}</p>
+	</form>
+	<form action="{{ url_for('auth.register') }}">
+		<p>
+			<label for="register">New user?</label> {{ form.register() }}
+		</p>
+	</form>
+</div>
+{% endblock %}
