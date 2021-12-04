@@ -1,5 +1,0 @@
-include flaskr/schema.sql
-include README.md
-graft flaskr/static
-graft flaskr/templates
-global-exclude *.pyc
