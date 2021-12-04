@@ -1,5 +1,5 @@
-include flaskr/schema.sql
+include myblog/schema.sql
 include README.md
-graft flaskr/static
-graft flaskr/templates
+graft myblog/static
+graft myblog/templates
 global-exclude *.pyc

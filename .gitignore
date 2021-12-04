@@ -1,3 +1,7 @@
+migrations
+*.db
+.vscode
+
 venv/
 
 *.pyc

@@ -1,17 +1,18 @@
-import functools
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, redirect, render_template, request, url_for
 )
 from flask_login import current_user, login_user, logout_user
-from flaskr import db
-from flaskr.models import User
-from flaskr.forms import LoginForm, RegistrationForm
+from myblog import db
+from myblog.models import User
+from myblog.forms import LoginForm, RegistrationForm
 from werkzeug.urls import url_parse
 from datetime import datetime
 
+
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-@bp.route('/register', methods=('GET','POST'))
+
+@bp.route('/register', methods=('GET', 'POST'))
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -25,7 +26,8 @@ def register():
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
 
-@bp.route('/login', methods=('GET','POST'))
+
+@bp.route('/login', methods=('GET', 'POST'))
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -48,11 +50,13 @@ def login():
         flash(error)
     return render_template('auth/login.html', form=form)
 
+
 @bp.before_app_request
 def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+
 
 @bp.route('/logout')
 def logout():

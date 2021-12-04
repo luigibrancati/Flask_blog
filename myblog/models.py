@@ -1,8 +1,9 @@
 from datetime import datetime
-from flaskr import db, login
+from myblog import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from hashlib import md5
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,16 +33,19 @@ class User(UserMixin, db.Model):
     def load_user(id):
         return User.query.get(int(id))
 
+
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
     body = db.Column(db.String(1000))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    comments = db.relationship('Comment', backref='original_post', lazy='dynamic')
+    comments = db.relationship('Comment', backref='original_post',
+                               lazy='dynamic')
 
     def __repr__(self):
         return f'<Post {self.body}>'
+
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)

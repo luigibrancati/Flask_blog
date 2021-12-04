@@ -6,7 +6,7 @@ with open('./requirements.txt') as file:
 
 
 config = {
-    'name': 'flaskr-lb',
+    'name': 'myblog-lb',
     'version': '1.1.1a',
     'packages': find_packages(),
     'include_package_data': True,
