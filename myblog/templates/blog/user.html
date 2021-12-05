@@ -32,11 +32,11 @@
 	<body>
 		<div class="wrapperpadding">
 			<div class="tab">
-				<button class="tablinks" onclick="activateTab(event, 'user_posts')" id="PostButton">Posts</a>
-				<button class="tablinks" onclick="activateTab(event, 'user_comments')">Comments</a>
+				<button class="tablinks" onclick="activateTab(event, 'user_post_list')" id="PostButton">Posts</a>
+				<button class="tablinks" onclick="activateTab(event, 'user_comment_list')">Comments</a>
 			</div>
 			<div>
-				<div id="user_posts" class="tabcontent">
+				<div id="user_post_list" class="tabcontent">
 					<div class="post_list">
 						<ul>
 							{% for post in posts %}
@@ -58,26 +58,21 @@
 						<ul>
 					</div>
 				</div>
-				<div id="user_comments" class="tabcontent">
+				<div id="user_comment_list" class="tabcontent">
 					<div class="comment_list">
 						<ul>
 							{% for comment in comments %}
 								<li>
 									{% if loop.index%2==0 %}
 										<div class="comment">
-											<h3>
-												<a href="{{ url_for('blog.show_post', post_id=comment.original_post.id) }}">Go to post</a>
-											</h3>
-											{% include "blog/snippet_comment.html" %}
-										</div>
 									{% else %}
 										<div class="comment dark">
+									{% endif %}
 											<h3>
 												<a href="{{ url_for('blog.show_post', post_id=comment.original_post.id) }}">Go to post</a>
 											</h3>
 											{% include "blog/snippet_comment.html" %}
 										</div>
-									{% endif %}
 								</li>
 							{% endfor %}
 						</ul>
