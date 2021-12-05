@@ -32,11 +32,13 @@
 	<hr class="post_comment_sep">
 	<div class="wrapperpadding">
 		<article class="comments">
-			<header>
-				<h1>Comments</h1>
+			<header class="header_button_grid">
 				<div>
+					<h1>Comments</h1>
+				</div>
+				<div class="button">
 					{% block add_comment %}
-						<form action="{{ url_for('blog.comment', post_id=post.id) }}"><button type="submit">Add comment</button></form>
+						<form action="{{ url_for('blog.comment', post_id=post.id) }}"><button type="submit">New</button></form>
 					{% endblock %}
 				</div>
 			</header>

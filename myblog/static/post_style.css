@@ -1,3 +1,9 @@
+.posts > ul {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
 /* Article */
 .post_article > header {
 	display: flex;
@@ -59,11 +65,12 @@
 	font-size: 1.15em;
 }
 
-.post_snippet {
-	border-bottom: 0;
-}
-
 hr.post_comment_sep {
 	color: #eee;
 	border: 8px solid;
+}
+
+/* Snippets */
+.post_snippet {
+	border-bottom: 0;
 }

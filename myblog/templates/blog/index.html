@@ -1,35 +1,39 @@
 {% extends 'base.html' %}
 
-{% block header %}
-	<header>
-		<h1>{% block title%}Posts{% endblock %}</h1>
-		{% if not current_user.is_anonymous %}
-		<form action="{{ url_for('blog.create') }}"><button type="submit">New</button></form>
-		{% endif %}
-	</header>
-{% endblock %}
+{% block header %}{% endblock %}
 
 {% block content %}
 	<div class="wrapperpadding">
-	{% if posts %}
-		<ul>
-			{% for post in posts %}
-				{% if loop.index%2==0 %}
-					<div class="post post_snippet dark">
-						{% include "blog/snippet_post.html"%}
+		<article class="posts">
+			<header class="header_button_grid">
+				<div>
+					<h1>{% block title%}Posts{% endblock %}</h1>
+				</div>
+				{% if not current_user.is_anonymous %}
+					<div class="button">
+						<form action="{{ url_for('blog.create') }}"><button type="submit">New</button></form>
 					</div>
-				{% else %}
-					<div class="post post_snippet">
-						{% include "blog/snippet_post.html"%}
-					</div>
-				{% endif %}
-				{% if not loop.last %}
-					<hr>
-				{% endif %}
-			{% endfor %}
-		<ul>
-	{% else %}
-		<p>No posts still!</p>
-	{% endif %}
+					{% endif %}
+			</header>
+			<hr>
+			<ul>
+				{% for post in posts %}
+					<li>
+						{% if loop.index%2==0 %}
+							<div class="post post_snippet dark">
+								{% include "blog/snippet_post.html"%}
+							</div>
+						{% else %}
+							<div class="post post_snippet">
+								{% include "blog/snippet_post.html"%}
+							</div>
+						{% endif %}
+						{% if not loop.last %}
+							<hr>
+						{% endif %}
+					</li>
+				{% endfor %}
+			<ul>
+		</article>
 	</div>
 {% endblock %}

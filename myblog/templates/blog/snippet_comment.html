@@ -1,14 +1,17 @@
-<div class="comment comment_snippet">
-	<table>
-		<tr valign="top">
-			<td><img src="{{ comment.author.avatar(30) }}"></td>
-			<td>
-				<div>
-					<h1><a href="{{ url_for('blog.user', username=comment.author.username) }}">{{ comment.author.username }}</a></h1>
-						<div class="about">on {{ comment.timestamp.strftime('%d-%m-%Y %H:%M') }}</div>
-				</div>
-			</td>
-		</tr>
-	</table>
-	<p class="comment_body">{{ comment.body | safe }}</p>
+<div class="comment_thumbnail">
+	<img src="{{ comment.author.avatar(50) }}">
+	<div class="comment_edit_button">
+		{% if current_user == comment.author %}
+			<form action="{{ url_for('blog.update_comment', comment_id=comment.id) }}"><button type="submit">Edit</button></form>
+		{% endif %}
+	</div>
+</div>
+<div class="comment_main">
+	<p class="comment_header">
+		<a href="{{ url_for('blog.user', username=comment.author.username) }}">
+			<span class="label label-danger">{{ comment.author.username }}</span>
+		</a>
+		<span class="about">said on {{ comment.timestamp.strftime('%d-%m-%Y') }}</span>
+	</p>
+	<div class="comment_body">{{ comment.body | safe }}</div>
 </div>
