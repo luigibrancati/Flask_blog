@@ -1,6 +1,9 @@
 <!doctype html>
 <title>{% block title %}{% endblock %} - BK Blog</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='post_style.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='comment_style.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='code_style.css')}}">
 <nav>
 	<h1><a href=" {{ url_for('index') }} ">BK Blog</a></h1>
 	<ul>
@@ -16,17 +19,13 @@
 	</ul>
 </nav>
 <section class="content">
-	<header>
-		{% block header %}{% endblock %}
-	</header>
+	{% block header %}{% endblock %}
 	{% for message in get_flashed_messages() %}
 		<div class="flash">{{ message }}</div>
 	{% endfor %}
 	{% block content %}{% endblock %}
-	</section>
+</section>
 <footer>
-			<p>
-				Code on <a href="https://github.com/luigibrancati/Flask_blog" >GitHub</a>
-			</p>
+	<p>Code on <a href="https://github.com/luigibrancati/Flask_blog">GitHub</a></p>
 </footer>
 

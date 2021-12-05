@@ -1,0 +1,21 @@
+<div class="comment_thumbnail">
+	<img src="{{ comment.author.avatar(50) }}">
+	<div class="comment_edit_button">
+		{% if current_user == comment.author %}
+			<form action="{{ url_for('blog.update_comment', comment_id=comment.id) }}"><button type="submit">Edit</button></form>
+		{% endif %}
+	</div>
+</div>
+<div class="comment_main">
+	<p class="comment_header">
+		<a href="{{ url_for('blog.user', username=comment.author.username) }}">
+			{% if comment.author.username == post.author.username %}
+				<span class="label label-danger">{{ comment.author.username }}</span>
+			{% else %}
+				<span class="label label-primary">{{ comment.author.username }}</span>
+			{% endif %}
+		</a>
+		<span class="about">said on {{ comment.timestamp.strftime('%d-%m-%Y') }}</span>
+	</p>
+	<div class="comment_body">{{ comment.body | safe }}</div>
+</div>

@@ -1,0 +1,37 @@
+.comments > ul {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.comment {
+	display: flex;
+	align-items: flex-start;
+	font-size: 0.8em;
+	margin-bottom: 0.5em;
+}
+
+.comment_main {
+	display: block;
+	width: 100%;
+	height: 100%;
+	padding: 0 0.6em;
+}
+
+.comment_header {
+	margin-top: 0;
+	font-size: 1.1em;
+}
+
+.comment a {
+	text-decoration: none;
+}
+
+.comment_thumbnail {
+	align-items: center;
+}
+
+.comment_body > p {
+	white-space: pre-line;
+	word-wrap: anywhere;
+}

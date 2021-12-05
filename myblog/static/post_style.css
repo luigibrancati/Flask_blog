@@ -1,0 +1,40 @@
+.post > header { 
+	display: flex;
+	align-items: last baseline;
+	font-size: 0.85em;
+	border-bottom: 1px solid lightgray;
+}
+
+.post > header > div:first-of-type {
+	flex: auto;
+}
+
+.post > header h1 {
+	font-size: 1.8em;
+	margin-bottom: 0;
+}
+
+.post .body {
+	white-space: pre-line;
+}
+
+.post .body h1 {
+	font-size: 1.5em;
+}
+
+.post .body h2 {
+	font-size: 1.35em;
+}
+
+.post .body h3 {
+	font-size: 1.2em;
+}
+
+.post_snippet {
+	border-bottom: 0;
+}
+
+hr.post_comment_sep {
+	color: #eee;
+	border: 8px solid;
+}

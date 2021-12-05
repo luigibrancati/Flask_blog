@@ -1,13 +1,17 @@
 {% extends 'base.html' %}
 
 {% block header %}
-	<h1>{% block title %}
-		{% if post is not none %}
-			Edit "{{ post.title }}"
-		{% else %}
-			New Post
-		{% endif %}
-	{% endblock %}</h1>
+	<header>
+		<h1>
+			{% block title %}
+			{% if post is not none %}
+				Edit "{{ post.title }}"
+			{% else %}
+				New Post
+			{% endif %}
+			{% endblock %}
+		</h1>
+	</header>
 {% endblock %}
 
 {% block content %}

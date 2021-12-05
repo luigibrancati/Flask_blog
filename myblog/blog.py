@@ -19,10 +19,7 @@ bp = Blueprint('blog', __name__)
 @bp.route('/')
 def index():
     posts = Post.query.order_by(Post.timestamp.desc()).all()
-    if posts:
-        return render_template('blog/index.html', posts=posts)
-    else:
-        return render_template('blog/index_noposts.html', posts=None)
+    return render_template('blog/index.html', posts=posts)
 
 
 # Show user profile page
@@ -85,7 +82,7 @@ def create():
     form = CreatePostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data,
-                    body=markdown.markdown(form.body.data),
+                    body=form.body.data,
                     author=current_user)
         db.session.add(post)
         db.session.commit()
@@ -98,7 +95,10 @@ def create():
 @login_required
 def show_post(post_id):
     post = get_post(post_id, check_author=False)
+    post.body = markdown.markdown(post.body)
     comments = get_comments(post_id)
+    for comment in comments:
+        comment.body = markdown.markdown(comment.body)
     return render_template('blog/show_post.html', post=post, comments=comments)
 
 
@@ -112,7 +112,7 @@ def update(post_id):
             flash("You can't edit a post that is not yours!")
             return redirect(url_for('blog.show_post', post_id=post_id))
         post.title = form.title.data
-        post.body = markdown.markdown(form.body.data)
+        post.body = form.body.data
         db.session.commit()
         flash("Your changes have been saved.")
         return redirect(url_for('blog.show_post', post_id=post_id))
@@ -139,8 +139,9 @@ def delete(post_id):
 def comment(post_id):
     form = CreateCommentForm()
     post = get_post(post_id, check_author=False)
+    post.body = markdown.markdown(post.body)
     if form.validate_on_submit():
-        comment = Comment(body=markdown.markdown(form.body.data), author=current_user,
+        comment = Comment(body=form.body.data, author=current_user,
                           original_post=post)
         db.session.add(comment)
         db.session.commit()
@@ -161,13 +162,14 @@ def update_comment(comment_id):
         if current_user != comment.author:
             flash("You can't edit a comment that is not yours!")
             return redirect(url_for('blog.show_post', post_id=post_id))
-        comment.body = markdown.markdown(form.body.data)
+        comment.body = form.body.data
         db.session.commit()
         flash('Your changes have been made.')
         return redirect(url_for('blog.show_post', post_id=post_id))
     elif request.method == "GET":
         form.body.data = comment.body
     post = get_post(post_id, check_author=False)
+    post.body = markdown.markdown(post.body)
     comments = get_comments(post_id)
     return render_template('blog/create_comment.html', form=form, post=post,
                            comments=comments, comment=comment)

@@ -10,7 +10,7 @@ body {
 	background: white;
 }
 
-h1 {
+header h1 {
 	font-family: serif;
 	color: #377ba8;
 	margin: .2rem 0;
@@ -122,44 +122,9 @@ input[type=submit] {
 	border: 1px solid #377ba8; 
 }
 
-.post > header { 
-	display: flex; 
-	align-items: last baseline; 
-	font-size: 0.85em; 
-}
-
-.comment > header { 
-	display: flex; 
-	align-items: last baseline; 
-	font-size: 0.85em; 
-}
-
-.post > header > div:first-of-type { 
-	flex: auto; 
-}
-
-.post > header h1 { 
-	font-size: 1.8em; 
-	margin-bottom: 0; 
-}
-
-hr.comment_sep {
-	color: #eee;
-	border: 8px solid;
-}
-
 .about { 
 	color: slategray; 
 	font-style: italic; 
-}
-
-.post .body { 
-	white-space: pre-line; 
-	font-size: 1.1em;
-}
-
-.comment .comment_body {
-	font-size: 0.9em;
 }
 
 .error {
@@ -221,4 +186,30 @@ footer p {
 /* Style the tab content */
 .tabcontent {
   display: none;
+}
+
+.label-primary {
+    background-color: #337ab7;
+}
+
+.label-danger {
+    background-color: #d9534f;
+}
+
+.label {
+    display: inline;
+    padding: .2em .3em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+}
+
+.dark {
+	background-color: hsl(204, 60%, 80%);
+	border-bottom: 1px solid hsl(204, 60%, 60%);
 }
