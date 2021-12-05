@@ -64,15 +64,18 @@
 						<ul>
 							{% for comment in comments %}
 								<li>
-									<h3>
-										<a href="{{ url_for('blog.show_post', post_id=comment.original_post.id) }}">Go to post</a>
-									</h3>
 									{% if loop.index%2==0 %}
 										<div class="comment">
+											<h3>
+												<a href="{{ url_for('blog.show_post', post_id=comment.original_post.id) }}">Go to post</a>
+											</h3>
 											{% include "blog/snippet_comment.html" %}
 										</div>
 									{% else %}
 										<div class="comment dark">
+											<h3>
+												<a href="{{ url_for('blog.show_post', post_id=comment.original_post.id) }}">Go to post</a>
+											</h3>
 											{% include "blog/snippet_comment.html" %}
 										</div>
 									{% endif %}

@@ -9,18 +9,20 @@
 {% endblock %}
 
 {% block add_comment %}
-	<form method="POST">
-		{{ form.hidden_tag() }}
-		<p>
-			{{ form.body.label }}<br>
-			{{ form.body(cols=50, row=4) }}
-		</p>
-		<p>{{ form.submit() }}</p> 
-	</form>
-	{% if comment is not none %}
-		<hr>
-		<form action="{{ url_for('blog.delete_comment', comment_id=comment.id) }}" method="POST">
-			<input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+	<header>
+		<form method="POST">
+			{{ form.hidden_tag() }}
+			<p>
+				{{ form.body.label }}<br>
+				{{ form.body(cols=50, row=4) }}
+			</p>
+			<p>{{ form.submit() }}</p> 
 		</form>
-	{% endif %}
+		{% if comment is not none %}
+			<hr>
+			<form action="{{ url_for('blog.delete_comment', comment_id=comment.id) }}" method="POST">
+				<input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+			</form>
+		{% endif %}
+	</header>
 {% endblock %}
