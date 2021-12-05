@@ -5,13 +5,11 @@ with open('./requirements.txt') as file:
     reqs = [r.rstrip() for r in reqs]
 
 
-config = {
-    'name': 'myblog-lb',
-    'version': '1.1.1a',
-    'packages': find_packages(),
-    'include_package_data': True,
-    'zip_safe': False,
-    'install_requires': reqs
-}
-
-setup(**config)
+setup(
+    name='myblog-lb',
+    version='1.1.1',
+    packages=find_packages(),
+    include_package_data=True,
+    zip_safe=False,
+    install_requires=reqs
+)
