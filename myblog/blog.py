@@ -9,6 +9,7 @@ from myblog.forms import (
     EditCommentForm
 )
 from flask_login import login_required, current_user
+import markdown
 
 
 bp = Blueprint('blog', __name__)
@@ -83,7 +84,8 @@ def get_comments(post_id):
 def create():
     form = CreatePostForm()
     if form.validate_on_submit():
-        post = Post(title=form.title.data, body=form.body.data,
+        post = Post(title=form.title.data,
+                    body=markdown.markdown(form.body.data),
                     author=current_user)
         db.session.add(post)
         db.session.commit()
@@ -110,7 +112,7 @@ def update(post_id):
             flash("You can't edit a post that is not yours!")
             return redirect(url_for('blog.show_post', post_id=post_id))
         post.title = form.title.data
-        post.body = form.body.data
+        post.body = markdown.markdown(form.body.data)
         db.session.commit()
         flash("Your changes have been saved.")
         return redirect(url_for('blog.show_post', post_id=post_id))
@@ -138,7 +140,7 @@ def comment(post_id):
     form = CreateCommentForm()
     post = get_post(post_id, check_author=False)
     if form.validate_on_submit():
-        comment = Comment(body=form.body.data, author=current_user,
+        comment = Comment(body=markdown.markdown(form.body.data), author=current_user,
                           original_post=post)
         db.session.add(comment)
         db.session.commit()
@@ -159,7 +161,7 @@ def update_comment(comment_id):
         if current_user != comment.author:
             flash("You can't edit a comment that is not yours!")
             return redirect(url_for('blog.show_post', post_id=post_id))
-        comment.body = form.body.data
+        comment.body = markdown.markdown(form.body.data)
         db.session.commit()
         flash('Your changes have been made.')
         return redirect(url_for('blog.show_post', post_id=post_id))
