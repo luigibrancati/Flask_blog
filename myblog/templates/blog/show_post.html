@@ -4,24 +4,29 @@
 
 {% block content %}
 	<div class="wrapperpadding">
-		<article class="post">
+		<article class="post_article">
 			<header>
-				<table>
-					<tr valign="top">
-						<td><img src="{{ post.author.avatar(60) }}"></td>
-						<td>
-							<div>
-								<h1>{% block title%}{{ post.title }}{% endblock %}</h1>
-								<div class="about">by <a href="{{ url_for('blog.user', username=post.author.username) }}">{{ post.author.username }}</a> on {{post.timestamp.strftime('%d-%m-%Y')}}</div>
-							</div>
-							{% if current_user == post.author %}
-								<form action="{{ url_for('blog.update', post_id=post.id) }}"><button type="submit">Edit Post</button></form>
-							{% endif %}
-						</td>
-					</tr>
-				</table>
+				<h1>{% block title%}{{ post.title }}{% endblock %}</h1>
 			</header>
-			<div class="body">{{ post.body | safe }}</div>
+			<div class="post">
+				<div class="post_thumbnail">
+					<img src="{{ post.author.avatar(80) }}">
+					<div class="post_edit_button">
+						{% if current_user == post.author %}
+							<form action="{{ url_for('blog.update', post_id=post.id) }}"><button type="submit">Edit Post</button></form>
+						{% endif %}
+					</div>
+				</div>
+				<div class="post_main">
+					<p class="post_header">
+						<a href="{{ url_for('blog.user', username=post.author.username) }}">
+							<span class="label label-danger">{{ post.author.username }}</span>
+						</a>
+						<span class="about">said on {{ post.timestamp.strftime('%d-%m-%Y') }}</span>
+					</p>
+					<div class="post_body">{{ post.body | safe }}</div>
+				</div>
+			</div>
 		</article>
 	</div>
 	<hr class="post_comment_sep">
