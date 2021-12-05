@@ -31,7 +31,7 @@
 				<h1>Comments</h1>
 				<div>
 					{% block add_comment %}
-						<form action="{{ url_for('blog.comment', post_id=post.id) }}"><button type="submit">Add a comment</button></form>
+						<form action="{{ url_for('blog.comment', post_id=post.id) }}"><button type="submit">Add comment</button></form>
 					{% endblock %}
 				</div>
 			</header>
