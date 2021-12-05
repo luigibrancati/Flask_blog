@@ -2,30 +2,29 @@
 
 {% block header %}
 	<header>
-		<table>
-			<tr valign="top">
-				<td><img src="{{ user.avatar(128) }}"></td>
-				<td>
-					<div>
-					<h1>{% block title %}{{ user.username }} - Profile{% endblock %}</h1>
-					{% if user.about_me %}
-						<p><b>About me:</b> {{user.about_me}}</p>
-					{% endif %}
-					{% if user.email %}
-						<p><b>Email:</b> {{user.email}}</p>
-					{% endif %}
-					{% if user.created %}
-						<p><b>Created:</b> {{user.created.strftime('%d-%m-%Y %H:%M')}}</p>
-					{% endif %}
-					{% if user.last_seen %}
-						<p><b>Last seen on:</b> {{user.last_seen.strftime('%d-%m-%Y %H:%M')}}</p>
-					{% endif %}
-					{% if current_user.id == user.id %}
-					<p><a href="{{ url_for('blog.edit_profile', username=user.username) }}">Edit Profile</a></p>
-					{% endif %}
-				</td>
-			</tr>
-		</table>
+		<div class="user">
+			<div class="user_thumbnail">
+				<img src="{{ user.avatar(128) }}">
+				{% if current_user.id == user.id %}
+					<form action="{{ url_for('blog.edit_profile', username=user.username) }}"><button type="submit">Edit Profile</button></form>
+				{% endif %}
+			</div>
+			<div class="user_info">
+				<h1>{% block title %}{{ user.username }}{% endblock %}</h1>
+				<!-- {% if user.about_me %}
+					<p><b>About me:</b> {{user.about_me}}</p>
+				{% endif %} -->
+				{% if user.email %}
+					<p><b>Email:</b> {{user.email}}</p>
+				{% endif %}
+				{% if user.created %}
+					<p><b>Created:</b> {{user.created.strftime('%d-%m-%Y %H:%M')}}</p>
+				{% endif %}
+				{% if user.last_seen %}
+					<p><b>Last seen on:</b> {{user.last_seen.strftime('%d-%m-%Y %H:%M')}}</p>
+				{% endif %}
+			</div>
+		</div>
 	</header>
 {% endblock %}
 
@@ -38,7 +37,7 @@
 			</div>
 			<div>
 				<div id="user_posts" class="tabcontent">
-					<div class="posts">
+					<div class="post_list">
 						<ul>
 							{% for post in posts %}
 								<li>
@@ -60,7 +59,7 @@
 					</div>
 				</div>
 				<div id="user_comments" class="tabcontent">
-					<div class="comments">
+					<div class="comment_list">
 						<ul>
 							{% for comment in comments %}
 								<li>

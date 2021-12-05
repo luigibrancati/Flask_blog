@@ -37,21 +37,23 @@ def user(username):
 @bp.route('/edit_profile/<username>', methods=('GET', 'POST'))
 @login_required
 def edit_profile(username):
-    form = EditProfileForm(current_user.username)
+    form = EditProfileForm(current_user.username, current_user.email)
     user = User.query.filter_by(username=username).first_or_404()
     if form.validate_on_submit():
         if current_user.id != user.id:
             flash("You can only modify your own profile!")
             return redirect(url_for('blog.user', username=username))
         user.username = form.username.data
-        user.about_me = form.about_me.data
+        user.email = form.email.data
+        # user.about_me = form.about_me.data
         db.session.commit()
         flash('Your changes have been saved.')
-        return redirect(url_for('blog.edit_profile',
+        return redirect(url_for('blog.user',
                                 username=form.username.data))
     elif request.method == 'GET':
         form.username.data = user.username
-        form.about_me.data = user.about_me
+        form.email.data = user.email
+        # form.about_me.data = user.about_me
     return render_template('blog/edit_profile.html', user=user, form=form)
 
 
