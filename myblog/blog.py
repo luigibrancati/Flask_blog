@@ -9,7 +9,7 @@ from myblog.forms import (
     EditCommentForm
 )
 from flask_login import login_required, current_user
-import markdown
+from .utils import format_markdown
 
 
 bp = Blueprint('blog', __name__)
@@ -97,10 +97,10 @@ def create():
 @login_required
 def show_post(post_id):
     post = get_post(post_id, check_author=False)
-    post.body = markdown.markdown(post.body)
+    post.body = format_markdown(post.body)
     comments = get_comments(post_id)
     for comment in comments:
-        comment.body = markdown.markdown(comment.body)
+        comment.body = format_markdown(comment.body)
     return render_template('blog/show_post.html', post=post, comments=comments)
 
 
@@ -141,7 +141,7 @@ def delete(post_id):
 def comment(post_id):
     form = CreateCommentForm()
     post = get_post(post_id, check_author=False)
-    post.body = markdown.markdown(post.body)
+    post.body = format_markdown(post.body)
     if form.validate_on_submit():
         comment = Comment(body=form.body.data, author=current_user,
                           original_post=post)
@@ -171,7 +171,7 @@ def update_comment(comment_id):
     elif request.method == "GET":
         form.body.data = comment.body
     post = get_post(post_id, check_author=False)
-    post.body = markdown.markdown(post.body)
+    post.body = format_markdown(post.body)
     comments = get_comments(post_id)
     return render_template('blog/create_comment.html', form=form, post=post,
                            comments=comments, comment=comment)
