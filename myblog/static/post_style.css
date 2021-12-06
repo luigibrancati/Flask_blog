@@ -55,14 +55,17 @@
 
 .post_body h1 {
 	font-size: 1.55em;
+	font-weight: normal;
 }
 
 .post_body h2 {
 	font-size: 1.35em;
+	font-weight: normal;
 }
 
 .post_body h3 {
 	font-size: 1.15em;
+	font-weight: normal;
 }
 
 hr.post_comment_sep {
@@ -73,4 +76,8 @@ hr.post_comment_sep {
 /* Snippets */
 .post_snippet {
 	border-bottom: 0;
+}
+
+.post_snippet .post_body h2 {
+	font-weight: bold;
 }
