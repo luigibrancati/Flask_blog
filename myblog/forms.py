@@ -6,6 +6,9 @@ from wtforms.validators import DataRequired, ValidationError, Email,\
 from myblog.models import User, Post
 
 
+POST_LEN = 1000000
+
+
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -61,7 +64,7 @@ class CreatePostForm(FlaskForm):
     title = StringField('Title',
                         validators=[DataRequired(), Length(min=0, max=120)])
     body = TextAreaField('Body',
-                         validators=[DataRequired(), Length(min=0, max=1000)])
+                         validators=[DataRequired(), Length(min=0, max=POST_LEN)])
     submit = SubmitField('Submit')
 
     def validate_title(self, title):
@@ -74,7 +77,7 @@ class EditPostForm(FlaskForm):
     title = StringField('Title',
                         validators=[DataRequired(), Length(min=0, max=120)])
     body = TextAreaField('Body',
-                         validators=[DataRequired(), Length(min=0, max=1000)])
+                         validators=[DataRequired(), Length(min=0, max=POST_LEN)])
     submit = SubmitField('Submit')
 
     def __init__(self, original_title, *args, **kwargs):
