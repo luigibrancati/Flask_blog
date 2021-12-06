@@ -6,4 +6,5 @@ Flask-Migrate==3.1.0
 Flask-SQLAlchemy==2.5.1
 Flask-WTF==1.0.0
 Markdown==3.3.6
+Pygments==2.10.0
 python-dotenv==0.19.2
