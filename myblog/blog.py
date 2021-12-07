@@ -78,7 +78,6 @@ def create():
 
 
 @bp.route('/<int:post_id>/show_post', methods=('GET',))
-@login_required
 def show_post(post_id):
     """Render a post thread."""
     post = get_post(post_id, check_author=False)
