@@ -1,15 +1,13 @@
-from flask import (
-    Blueprint, flash, redirect, render_template, request, url_for
-)
-from werkzeug.exceptions import abort
+from flask import Blueprint, flash, redirect,\
+                  render_template, request, url_for
 from myblog import db
-from myblog.models import User, Post, Comment
-from myblog.forms import (
-    EditProfileForm, CreatePostForm, EditPostForm, CreateCommentForm,
-    EditCommentForm
-)
+from myblog.email_notifications import OpCommentNotificationEmailSender
+from myblog.models import Post, Comment
+from myblog.forms import EditProfileForm, CreatePostForm, EditPostForm,\
+                         CreateCommentForm, EditCommentForm
 from flask_login import login_required, current_user
-from .utils import format_markdown
+from .utils import format_markdown, get_comment, get_post,\
+                   get_user, get_all_comments
 
 
 bp = Blueprint('blog', __name__)
@@ -18,31 +16,37 @@ bp = Blueprint('blog', __name__)
 # Index page
 @bp.route('/')
 def index():
+    """Render the main index."""
     posts = Post.query.order_by(Post.timestamp.desc()).all()
+    posts.sort(key=lambda p: p.timestamp, reverse=True)
     return render_template('blog/index.html', posts=posts)
 
 
 # Show user profile page
-@bp.route('/user/<username>')
+@bp.route('/user/<user_id>')
 @login_required
-def user(username):
-    user = User.query.filter_by(username=username).first_or_404()
+def user(user_id):
+    """Render the user profile."""
+    user = get_user(user_id)
     posts = Post.query.filter_by(author=user).all()
     comments = Comment.query.filter_by(author=user).all()
+    posts.sort(key=lambda p: p.timestamp, reverse=True)
+    comments.sort(key=lambda c: c.timestamp, reverse=True)
     return render_template('blog/user.html', user=user, posts=posts,
                            comments=comments)
 
 
 # Edit profile form
-@bp.route('/edit_profile/<username>', methods=('GET', 'POST'))
+@bp.route('/edit_profile/<user_id>', methods=('GET', 'POST'))
 @login_required
-def edit_profile(username):
+def edit_profile(user_id):
+    """Edits the user profile."""
     form = EditProfileForm(current_user.username, current_user.email)
-    user = User.query.filter_by(username=username).first_or_404()
-    if form.validate_on_submit():
-        if current_user.id != user.id:
-            flash("You can only modify your own profile!")
-            return redirect(url_for('blog.user', username=username))
+    user = get_user(user_id)
+    if current_user.id != user.id:
+        flash("You can only modify your own profile!")
+        return redirect(url_for('blog.user', user_id=user.id))
+    elif form.validate_on_submit():
         user.username = form.username.data
         user.email = form.email.data
         # user.about_me = form.about_me.data
@@ -57,30 +61,10 @@ def edit_profile(username):
     return render_template('blog/edit_profile.html', user=user, form=form)
 
 
-def get_post(post_id, check_author=True):
-    post = Post.query.filter_by(id=post_id).first_or_404()
-    if check_author and post.author.id != current_user.id:
-        abort(403)
-    return post
-
-
-def get_comment(comment_id, check_author=True):
-    comment = Comment.query.filter_by(id=comment_id).first_or_404()
-    if check_author and comment.author.id != current_user.id:
-        abort(403)
-    return comment
-
-
-def get_comments(post_id):
-    get_post(post_id, check_author=False)
-    comments = Comment.query.filter_by(post_id=post_id)\
-        .order_by(Comment.timestamp.desc()).all()
-    return comments
-
-
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
 def create():
+    """Create new post."""
     form = CreatePostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data,
@@ -96,9 +80,11 @@ def create():
 @bp.route('/<int:post_id>/show_post', methods=('GET',))
 @login_required
 def show_post(post_id):
+    """Render a post thread."""
     post = get_post(post_id, check_author=False)
     post.body = format_markdown(post.body)
-    comments = get_comments(post_id)
+    comments = get_all_comments(post_id)
+    comments.sort(key=lambda c: c.timestamp)
     for comment in comments:
         comment.body = format_markdown(comment.body)
     return render_template('blog/show_post.html', post=post, comments=comments)
@@ -107,12 +93,13 @@ def show_post(post_id):
 @bp.route('/<int:post_id>/update', methods=('GET', 'POST'))
 @login_required
 def update(post_id):
+    """Edit a post."""
     post = get_post(post_id)
     form = EditPostForm(post.title)
-    if form.validate_on_submit():
-        if current_user != post.author:
-            flash("You can't edit a post that is not yours!")
-            return redirect(url_for('blog.show_post', post_id=post_id))
+    if current_user != post.author:
+        flash("You can't edit a post that is not yours!")
+        return redirect(url_for('blog.show_post', post_id=post_id))
+    elif form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
         db.session.commit()
@@ -127,8 +114,9 @@ def update(post_id):
 @bp.route('/<int:post_id>/delete', methods=('POST',))
 @login_required
 def delete(post_id):
+    """Delete a post."""
     post = get_post(post_id)
-    comments = get_comments(post_id)
+    comments = get_all_comments(post_id)
     db.session.delete(post)
     for comment in comments:
         db.session.delete(comment)
@@ -139,8 +127,10 @@ def delete(post_id):
 @bp.route('/<int:post_id>/comment', methods=('GET', 'POST'))
 @login_required
 def comment(post_id):
+    """Add a comment under a post. Also sends an email notification to original poster."""
     form = CreateCommentForm()
     post = get_post(post_id, check_author=False)
+    op = get_user(post.user_id)
     post.body = format_markdown(post.body)
     if form.validate_on_submit():
         comment = Comment(body=form.body.data, author=current_user,
@@ -148,8 +138,16 @@ def comment(post_id):
         db.session.add(comment)
         db.session.commit()
         flash('Comment created.')
+        # Send mail notification to OP
+        OpCommentNotificationEmailSender\
+            .build_message(
+                url_for('blog.show_post', post_id=post.id, _external=True),
+                comment.id,
+                op,
+                current_user)\
+            .send_mail()
         return redirect(url_for('blog.show_post', post_id=post_id))
-    comments = get_comments(post_id)
+    comments = get_all_comments(post_id)
     return render_template('blog/create_comment.html', form=form, post=post,
                            comments=comments, comment=None)
 
@@ -157,6 +155,7 @@ def comment(post_id):
 @bp.route('/<int:comment_id>/update_comment', methods=('GET', 'POST'))
 @login_required
 def update_comment(comment_id):
+    """Update a comment under a post."""
     comment = get_comment(comment_id)
     post_id = comment.original_post.id
     form = EditCommentForm()
@@ -172,7 +171,7 @@ def update_comment(comment_id):
         form.body.data = comment.body
     post = get_post(post_id, check_author=False)
     post.body = format_markdown(post.body)
-    comments = get_comments(post_id)
+    comments = get_all_comments(post_id)
     return render_template('blog/create_comment.html', form=form, post=post,
                            comments=comments, comment=comment)
 
@@ -180,6 +179,7 @@ def update_comment(comment_id):
 @bp.route('/<int:comment_id>/delete_comment', methods=('POST',))
 @login_required
 def delete_comment(comment_id):
+    """Delete a comment."""
     comment = get_comment(comment_id)
     post_id = comment.original_post.id
     db.session.delete(comment)
