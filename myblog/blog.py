@@ -1,13 +1,13 @@
 from flask import Blueprint, flash, redirect,\
                   render_template, request, url_for
 from myblog import db
-from myblog.email_notifications import OpCommentNotificationEmailSender
+from myblog.email_notifications import OpCommentNotificationEmailSender, TagNotificationEmailSender
 from myblog.models import Post, Comment
 from myblog.forms import EditProfileForm, CreatePostForm, EditPostForm,\
                          CreateCommentForm, EditCommentForm
 from flask_login import login_required, current_user
 from .utils import format_markdown, get_comment, get_post,\
-                   get_user, get_all_comments
+                   get_user, get_all_comments, get_mentioned_users
 
 
 bp = Blueprint('blog', __name__)
@@ -130,7 +130,6 @@ def comment(post_id):
     """Add a comment under a post. Also sends an email notification to original poster."""
     form = CreateCommentForm()
     post = get_post(post_id, check_author=False)
-    op = get_user(post.user_id)
     post.body = format_markdown(post.body)
     if form.validate_on_submit():
         comment = Comment(body=form.body.data, author=current_user,
@@ -143,9 +142,18 @@ def comment(post_id):
             .build_message(
                 url_for('blog.show_post', post_id=post.id, _external=True),
                 comment.id,
-                op,
+                get_user(post.user_id),
                 current_user)\
             .send_mail()
+        # Send emails to tagged users
+        for user in get_mentioned_users(comment.body):
+            TagNotificationEmailSender\
+                .build_message(
+                    url_for('blog.show_post', post_id=post.id, _external=True),
+                    comment.id,
+                    user,
+                    current_user)\
+                .send_mail()
         return redirect(url_for('blog.show_post', post_id=post_id))
     comments = get_all_comments(post_id)
     return render_template('blog/create_comment.html', form=form, post=post,

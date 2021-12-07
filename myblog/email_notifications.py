@@ -46,7 +46,8 @@ class EmailSender(ABC):
 class OpCommentNotificationEmailSender(EmailSender):
 
     @classmethod
-    def build_message(cls, post_url: str, comment_id: str, receiver: User, commenter: User):
+    def build_message(cls, post_url: str, comment_id: str,
+                      receiver: User, commenter: User):
         obj = cls()
         obj.add_receiver_email(receiver.email)
         obj.add_subject("Comment notification")
@@ -71,25 +72,28 @@ class OpCommentNotificationEmailSender(EmailSender):
         return obj
 
 
-class CommentNotificationEmailSender(EmailSender):
+class TagNotificationEmailSender(EmailSender):
 
-    def build_message(self, post_url: str,  receiver: User, commenter: User):
-        self.add_receiver_email(receiver.email)
-        self.add_subject("Comment notification")
+    @classmethod
+    def build_message(cls, post_url: str, comment_id: str,
+                      tagged: User, tagger: User):
+        obj = cls()
+        obj.add_receiver_email(tagged.email)
+        obj.add_subject("Mention notification")
+        post_url = post_url + f'#comment_{comment_id}'
         text = f"""\
-        Hi {receiver.username},
-        User {commenter.username} commented on this post: {post_url}.
-        You're receiving this email because you're the original poster on the post thread.
+        Hi {tagged.username},
+        User {tagger.username} mentioned you when commenting on this post: {post_url}.
         """
-        self.add_plain_message(text)
+        obj.add_plain_message(text)
         html = f"""\
         <html>
         <body>
-            <p>Hi {receiver.username},<br>
-            User {commenter.username} commented on <a href="{post_url}">this post</a>.<br>
-            You're receiving this email because you're the original poster on the post thread.
+            <p>Hi {tagged.username},<br>
+            User {tagger.username} mentioned you when commenting <a href="{post_url}">this post</a>.
             </p>
         </body>
         </html>
         """
-        self.add_html_message(html)
+        obj.add_html_message(html)
+        return obj

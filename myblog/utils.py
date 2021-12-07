@@ -3,6 +3,7 @@ from markdown.extensions import fenced_code, codehilite
 from myblog.models import Post, Comment, User
 from werkzeug.exceptions import abort
 from flask_login import current_user
+import re
 
 
 def format_markdown(text: str) -> str:
@@ -37,3 +38,9 @@ def get_all_comments(post_id: str) -> list[Comment]:
     comments = Comment.query.filter_by(post_id=post_id)\
         .order_by(Comment.timestamp.desc()).all()
     return comments
+
+
+def get_mentioned_users(comment_text: str) -> list[User]:
+    mention_regex = '@[0-9a-zA-Z]+'
+    user_names = [m[1:] for m in re.compile(mention_regex).findall(comment_text)]
+    return [User.query.filter_by(username=un).first_or_404() for un in user_names]
