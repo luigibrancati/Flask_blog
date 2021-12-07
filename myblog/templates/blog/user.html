@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block header %}
-	<header>
+	<header id='userpage_header'>
 		<div class="user">
 			<div class="user_thumbnail">
 				<img src="{{ user.avatar(128) }}">
 				{% if current_user.id == user.id %}
-					<form action="{{ url_for('blog.edit_profile', username=user.username) }}"><button type="submit">Edit Profile</button></form>
+					<form action="{{ url_for('blog.edit_profile', user_id=user.id) }}"><button type="submit">Edit Profile</button></form>
 				{% endif %}
 			</div>
 			<div class="user_info">
