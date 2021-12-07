@@ -32,7 +32,7 @@ def get_user(user_id: str) -> User:
     return User.query.filter_by(id=user_id).first_or_404()
 
 
-def get_all_comments(post_id: str) -> list[Comment]:
+def get_all_comments(post_id: str) -> list:
     """Get all comments under a post."""
     get_post(post_id, check_author=False)
     comments = Comment.query.filter_by(post_id=post_id)\
@@ -40,7 +40,7 @@ def get_all_comments(post_id: str) -> list[Comment]:
     return comments
 
 
-def get_mentioned_users(comment_text: str) -> list[User]:
+def get_mentioned_users(comment_text: str) -> list:
     mention_regex = '@[0-9a-zA-Z]+'
     user_names = [m[1:] for m in re.compile(mention_regex).findall(comment_text)]
     return [User.query.filter_by(username=un).first_or_404() for un in user_names]
