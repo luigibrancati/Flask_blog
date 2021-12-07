@@ -22,4 +22,6 @@
 	text-decoration: none;
 }
 
-
+#userpage_header {
+	border-bottom: 16px solid #eee;
+}
