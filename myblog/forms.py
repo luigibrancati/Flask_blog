@@ -4,9 +4,7 @@ from wtforms import StringField, TextAreaField, PasswordField,\
 from wtforms.validators import DataRequired, ValidationError, Email,\
                                EqualTo, Length
 from myblog.models import User, Post
-
-
-POST_LEN = 1000000
+from myblog.config import POST_LEN
 
 
 class LoginForm(FlaskForm):
