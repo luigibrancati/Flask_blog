@@ -106,13 +106,16 @@ input[type=submit] {
 	margin-bottom: 0.5em; 
 }
 
-.content input, .content textarea { 
-	margin-bottom: 1em; 
+.content input, .content textarea {
+	margin-bottom: 1em;
 }
 
-.content textarea { 
+.content textarea {
 	min-height: 12em; 
-	resize: vertical; 
+	resize: both;
+	max-width: -moz-available;
+	max-width: -webkit-fill-available;
+	min-width: auto;
 }
 
 .flash { 
