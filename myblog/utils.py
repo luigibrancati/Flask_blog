@@ -1,5 +1,6 @@
 from markdown import markdown
-from markdown.extensions import fenced_code, codehilite
+from markdown.extensions import fenced_code, codehilite, tables
+import markdown_katex
 from myblog.models import Post, Comment, User
 from werkzeug.exceptions import abort
 from flask_login import current_user
@@ -9,7 +10,9 @@ import re
 def format_markdown(text: str) -> str:
     return markdown(text,
                     extensions=[fenced_code.makeExtension(),
-                                codehilite.makeExtension(user_pygments=True)])
+                                codehilite.makeExtension(user_pygments=True),
+                                tables.makeExtension(),
+                                markdown_katex.makeExtension()])
 
 
 def get_post(post_id: str, check_author=True) -> Post:
