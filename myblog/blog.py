@@ -138,13 +138,15 @@ def comment(post_id):
         db.session.commit()
         flash('Comment created.')
         # Send mail notification to OP
-        OpCommentNotificationEmailSender\
-            .build_message(
-                url_for('blog.show_post', post_id=post.id, _external=True),
-                comment.id,
-                get_user(post.user_id),
-                current_user)\
-            .send_mail()
+        op = get_user(post.user_id)
+        if comment.user_id != op.id:
+            OpCommentNotificationEmailSender\
+                .build_message(
+                    url_for('blog.show_post', post_id=post.id, _external=True),
+                    comment.id,
+                    op,
+                    current_user)\
+                .send_mail()
         # Send emails to tagged users
         for user in get_mentioned_users(comment.body):
             TagNotificationEmailSender\
