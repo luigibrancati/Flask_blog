@@ -18,7 +18,7 @@ class TagProcessor(InlineProcessor):
             el = etree.Element('tag')
             el.append(etree.Element('a'))
             el.find('a').text = m.group(2)
-            el.find('a').set('href', url_for('blog.user', user_id=user.id))
+            el.find('a').set('href', url_for('user_profile.user_profile', user_id=user.id))
             return el, m.start(0), m.end(0)
         return None, None, None
 

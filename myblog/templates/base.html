@@ -12,7 +12,7 @@
 	<ul>
 		{% if not current_user.is_anonymous %}
 			<li><span>Hi, {{ current_user.username }}!</span>
-			<li><form action="{{ url_for('blog.user', user_id=current_user.id) }}"><button type="submit">Profile</button></form>
+			<li><form action="{{ url_for('user_profile.user_profile', user_id=current_user.id) }}"><button type="submit">Profile</button></form>
 			<li><form action="{{ url_for('auth.logout') }}"><button type="submit" onclick="return confirm('Are you sure?');">Log Out</button></form>
 		{% else %}
 			<li><form action="{{url_for('auth.register') }}"><button type="submit">Register</button></form>

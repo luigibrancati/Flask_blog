@@ -36,7 +36,7 @@
 	</form>
 	{% if post is not none %}
 		<hr>
-		<form action="{{ url_for('blog.delete', post_id=post.id) }}" method="POST">
+		<form action="{{ url_for('post.delete_post', post_id=post.id) }}" method="POST">
 			<input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
 		</form>
 	{% endif %}
