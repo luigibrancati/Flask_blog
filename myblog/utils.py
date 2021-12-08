@@ -1,10 +1,33 @@
 from markdown import markdown
-from markdown.extensions import fenced_code, codehilite, tables
+from markdown.extensions import fenced_code, codehilite, tables, Extension
+from markdown.inlinepatterns import InlineProcessor
 import markdown_katex
 from myblog.models import Post, Comment, User
+from flask import url_for
 from werkzeug.exceptions import abort
 from flask_login import current_user
 import re
+import xml.etree.ElementTree as etree
+
+
+class TagProcessor(InlineProcessor):
+
+    def handleMatch(self, m, data) -> tuple:
+        user = User.query.filter_by(username=m.group(2)).first()
+        if user:
+            el = etree.Element('tag')
+            el.append(etree.Element('a'))
+            el.find('a').text = m.group(2)
+            el.find('a').set('href', url_for('blog.user', user_id=user.id))
+            return el, m.start(0), m.end(0)
+        return None, None, None
+
+
+class TagExtension(Extension):
+
+    def extendMarkdown(self, md):
+        DEL_PATTERN = r'(@)(\w+)'  # like @user
+        md.inlinePatterns.register(TagProcessor(DEL_PATTERN, md), 'tag', 175)
 
 
 def format_markdown(text: str) -> str:
@@ -12,7 +35,8 @@ def format_markdown(text: str) -> str:
                     extensions=[fenced_code.makeExtension(),
                                 codehilite.makeExtension(user_pygments=True),
                                 tables.makeExtension(),
-                                markdown_katex.makeExtension()])
+                                markdown_katex.makeExtension(),
+                                TagExtension()])
 
 
 def get_post(post_id: str, check_author=True) -> Post:
