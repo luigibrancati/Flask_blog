@@ -46,4 +46,5 @@ def get_all_comments(post_id: str) -> list:
 def get_mentioned_users(comment_text: str) -> list:
     mention_regex = '@[0-9a-zA-Z]+'
     user_names = [m[1:] for m in re.compile(mention_regex).findall(comment_text)]
-    return [User.query.filter_by(username=un).first_or_404() for un in user_names]
+    tagged_users = [User.query.filter_by(username=un).first() for un in user_names]
+    return [tu for tu in tagged_users if tu]

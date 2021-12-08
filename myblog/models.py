@@ -45,13 +45,13 @@ class User(UserMixin, db.Model):
 
     @validates('username')
     def validate_username(self, key, username: str) -> str:
-        if re.compile(r'[$-/:-?{-~!"^_`\[\]]').search(username):
+        if re.compile(r'[$-/:-?{-~! "^_`\[\]]').search(username):
             raise AssertionError("You cannot use symbols in your username!")
         return username
 
     @staticmethod
     def validate_username_static(username: str):
-        if re.compile(r'[$-/:-?{-~!"^_`\[\]]').search(username):
+        if re.compile(r'[$-/:-?{-~! "^_`\[\]]').search(username):
             raise AssertionError("You cannot use symbols in your username!")
 
 

@@ -28,7 +28,7 @@ class RegistrationForm(FlaskForm):
         try:
             User.validate_username_static(username.data)
         except AssertionError:
-            raise ValidationError("Usernames cannot contain special characters.")
+            raise ValidationError("Usernames cannot contain spaces or special characters.")
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
             raise ValidationError("Please use a different username.")
@@ -54,7 +54,7 @@ class EditProfileForm(FlaskForm):
         try:
             User.validate_username_static(username.data)
         except AssertionError:
-            raise ValidationError("Usernames cannot contain special characters.")
+            raise ValidationError("Usernames cannot contain spaces or special characters.")
         if username.data != self.original_username:
             user = User.query.filter_by(username=self.username.data).first()
             if user is not None:
