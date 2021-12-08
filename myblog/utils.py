@@ -39,7 +39,7 @@ def get_all_comments(post_id: str) -> list:
     """Get all comments under a post."""
     get_post(post_id, check_author=False)
     comments = Comment.query.filter_by(post_id=post_id)\
-        .order_by(Comment.timestamp.desc()).all()
+        .order_by(Comment.created_timestamp.desc()).all()
     return comments
 
 

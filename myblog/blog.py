@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Blueprint, flash, redirect,\
                   render_template, request, url_for
 from myblog import db
@@ -17,8 +18,7 @@ bp = Blueprint('blog', __name__)
 @bp.route('/')
 def index():
     """Render the main index."""
-    posts = Post.query.order_by(Post.timestamp.desc()).all()
-    posts.sort(key=lambda p: p.timestamp, reverse=True)
+    posts = Post.query.order_by(Post.created_timestamp.desc()).all()
     return render_template('blog/index.html', posts=posts)
 
 
@@ -30,8 +30,8 @@ def user(user_id):
     user = get_user(user_id)
     posts = Post.query.filter_by(author=user).all()
     comments = Comment.query.filter_by(author=user).all()
-    posts.sort(key=lambda p: p.timestamp, reverse=True)
-    comments.sort(key=lambda c: c.timestamp, reverse=True)
+    posts.sort(key=lambda p: p.created_timestamp, reverse=True)
+    comments.sort(key=lambda c: c.created_timestamp, reverse=True)
     return render_template('blog/user.html', user=user, posts=posts,
                            comments=comments)
 
@@ -84,7 +84,7 @@ def show_post(post_id):
     post = get_post(post_id, check_author=False)
     post.body = format_markdown(post.body)
     comments = get_all_comments(post_id)
-    comments.sort(key=lambda c: c.timestamp)
+    comments.sort(key=lambda c: c.created_timestamp)
     for comment in comments:
         comment.body = format_markdown(comment.body)
     return render_template('blog/show_post.html', post=post, comments=comments)
@@ -102,6 +102,7 @@ def update(post_id):
     elif form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
+        post.updated_timestmap = datetime.utcnow()
         db.session.commit()
         flash("Your changes have been saved.")
         return redirect(url_for('blog.show_post', post_id=post_id))
@@ -174,6 +175,7 @@ def update_comment(comment_id):
             flash("You can't edit a comment that is not yours!")
             return redirect(url_for('blog.show_post', post_id=post_id))
         comment.body = form.body.data
+        comment.updated_timestmap = datetime.utcnow()
         db.session.commit()
         flash('Your changes have been made.')
         return redirect(url_for('blog.show_post', post_id=post_id))

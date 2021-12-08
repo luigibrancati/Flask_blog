@@ -5,7 +5,15 @@ from flask_login import UserMixin
 from hashlib import md5
 
 
+class TimestampMixin(object):
+    """Model to track creation and update times."""
+    created_timestamp = db.Column(
+        db.DateTime, nullable=False, default=datetime.utcnow)
+    updated_timestmap = db.Column(db.DateTime, onupdate=datetime.utcnow)
+
+
 class User(UserMixin, db.Model):
+    """User model."""
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -34,11 +42,10 @@ class User(UserMixin, db.Model):
         return User.query.get(int(id))
 
 
-class Post(db.Model):
+class Post(TimestampMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
     body = db.Column(db.String(1000))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     comments = db.relationship('Comment', backref='original_post',
                                lazy='dynamic')
@@ -47,10 +54,9 @@ class Post(db.Model):
         return f'<Post {self.body}>'
 
 
-class Comment(db.Model):
+class Comment(TimestampMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(1000))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 
