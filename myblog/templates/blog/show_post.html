@@ -22,7 +22,7 @@
 						<a href="{{ url_for('blog.user', user_id=post.author.id) }}">
 							<span class="label label-danger">{{ post.author.username }}</span>
 						</a>
-						<span class="about">posted on {{ post.timestamp.strftime('%d-%m-%Y') }}</span>
+						<span class="about">posted on {{ post.created_timestamp.strftime('%d-%m-%Y') }}</span>
 					</p>
 					<div class="post_body">{{ post.body | safe }}</div>
 				</div>

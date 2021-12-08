@@ -15,7 +15,7 @@
 				<span class="label label-primary">{{ comment.author.username }}</span>
 			{% endif %}
 		</a>
-		<span class="about">said on {{ comment.timestamp.strftime('%d-%m-%Y') }}</span>
+		<span class="about">said on {{ comment.created_timestamp.strftime('%d-%m-%Y') }}</span>
 	</p>
 	<div class="comment_body">{{ comment.body | safe }}</div>
 </div>

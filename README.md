@@ -10,6 +10,8 @@ The final website is hosted [here](http://lbranco93.pythonanywhere.com/) just fo
 To start the app, first run the following commands
 ```
 $ flask db init
+$ flask db migrate
+$ flask db upgrade
 ```
 in order to instantiate the database. Then run
 ```

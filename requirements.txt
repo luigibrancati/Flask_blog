@@ -8,3 +8,4 @@ Flask-WTF==1.0.0
 Markdown==3.3.6
 Pygments==2.10.0
 python-dotenv==0.19.2
+markdown-katex==202109.1033

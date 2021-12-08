@@ -3,9 +3,19 @@ from myblog import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from hashlib import md5
+from sqlalchemy.orm import validates
+import re
+
+
+class TimestampMixin(object):
+    """Model to track creation and update times."""
+    created_timestamp = db.Column(
+        db.DateTime, nullable=False, default=datetime.utcnow)
+    updated_timestmap = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
 
 class User(UserMixin, db.Model):
+    """User model."""
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -33,12 +43,22 @@ class User(UserMixin, db.Model):
     def load_user(id):
         return User.query.get(int(id))
 
+    @validates('username')
+    def validate_username(self, key, username: str) -> str:
+        if re.compile(r'[$-/:-?{-~! "^_`\[\]]').search(username):
+            raise AssertionError("You cannot use symbols in your username!")
+        return username
 
-class Post(db.Model):
+    @staticmethod
+    def validate_username_static(username: str):
+        if re.compile(r'[$-/:-?{-~! "^_`\[\]]').search(username):
+            raise AssertionError("You cannot use symbols in your username!")
+
+
+class Post(TimestampMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
     body = db.Column(db.String(1000))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     comments = db.relationship('Comment', backref='original_post',
                                lazy='dynamic')
@@ -47,10 +67,9 @@ class Post(db.Model):
         return f'<Post {self.body}>'
 
 
-class Comment(db.Model):
+class Comment(TimestampMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(1000))
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 

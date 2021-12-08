@@ -38,6 +38,7 @@ class EmailSender(ABC):
     def add_receiver_email(self, receiver_email: str):
         self.message["To"] = receiver_email
 
+    @classmethod
     @abstractmethod
     def build_message(self, *args, **kwargs):
         pass
