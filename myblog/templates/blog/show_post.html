@@ -13,13 +13,13 @@
 					<img src="{{ post.author.avatar(80) }}">
 					<div class="post_edit_button">
 						{% if current_user == post.author %}
-							<form action="{{ url_for('blog.update', post_id=post.id) }}"><button type="submit">Edit Post</button></form>
+							<form action="{{ url_for('post.edit_post', post_id=post.id) }}"><button type="submit">Edit Post</button></form>
 						{% endif %}
 					</div>
 				</div>
 				<div class="post_main">
 					<p class="post_header">
-						<a href="{{ url_for('blog.user', user_id=post.author.id) }}">
+						<a href="{{ url_for('user_profile.user_profile', user_id=post.author.id) }}">
 							<span class="label label-danger">{{ post.author.username }}</span>
 						</a>
 						<span class="about">posted on {{ post.created_timestamp.strftime('%d-%m-%Y') }}</span>
@@ -38,7 +38,7 @@
 						<h1>Comments</h1>
 					</div>
 					<div class="button">
-							<form action="{{ url_for('blog.comment', post_id=post.id) }}"><button type="submit">New</button></form>
+							<form action="{{ url_for('comment.create_comment', post_id=post.id) }}"><button type="submit">New</button></form>
 					</div>
 				</header>
 			{% endblock %}

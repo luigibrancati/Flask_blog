@@ -3,7 +3,7 @@
 </div>
 <div class="comment_main">
 	<p class="comment_header">
-		<a href="{{ url_for('blog.user', user_id=comment.author.id) }}">
+		<a href="{{ url_for('user_profile.user_profile', user_id=comment.author.id) }}">
 			<span class="label label-danger">{{ comment.author.username }}</span>
 		</a>
 		<span class="about">said on {{ comment.created_timestamp.strftime('%d-%m-%Y') }}</span>

@@ -11,7 +11,7 @@
 				</div>
 				{% if not current_user.is_anonymous %}
 					<div class="button">
-						<form action="{{ url_for('blog.create') }}"><button type="submit">New</button></form>
+						<form action="{{ url_for('post.create_post') }}"><button type="submit">New</button></form>
 					</div>
 					{% endif %}
 			</header>

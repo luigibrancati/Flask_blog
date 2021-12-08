@@ -7,7 +7,7 @@ with open('./requirements.txt') as file:
 
 setup(
     name='myblog-lb',
-    version='1.1.1',
+    version='0.0.1',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
