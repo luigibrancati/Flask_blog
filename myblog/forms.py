@@ -5,6 +5,7 @@ from wtforms.validators import DataRequired, ValidationError, Email,\
                                EqualTo, Length
 from myblog.models import User, Post
 from myblog.config import POST_LEN
+from myblog.models import User
 
 
 class LoginForm(FlaskForm):
@@ -24,6 +25,10 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Register')
 
     def validate_username(self, username):
+        try:
+            User.validate_username_static(username.data)
+        except AssertionError:
+            raise ValidationError("Usernames cannot contain special characters.")
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
             raise ValidationError("Please use a different username.")
@@ -46,6 +51,10 @@ class EditProfileForm(FlaskForm):
         self.original_email = original_email
 
     def validate_username(self, username):
+        try:
+            User.validate_username_static(username.data)
+        except AssertionError:
+            raise ValidationError("Usernames cannot contain special characters.")
         if username.data != self.original_username:
             user = User.query.filter_by(username=self.username.data).first()
             if user is not None:

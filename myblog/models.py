@@ -3,6 +3,8 @@ from myblog import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from hashlib import md5
+from sqlalchemy.orm import validates
+import re
 
 
 class TimestampMixin(object):
@@ -40,6 +42,17 @@ class User(UserMixin, db.Model):
     @login.user_loader
     def load_user(id):
         return User.query.get(int(id))
+
+    @validates('username')
+    def validate_username(self, key, username: str) -> str:
+        if re.compile(r'[$-/:-?{-~!"^_`\[\]]').search(username):
+            raise AssertionError("You cannot use symbols in your username!")
+        return username
+
+    @staticmethod
+    def validate_username_static(username: str):
+        if re.compile(r'[$-/:-?{-~!"^_`\[\]]').search(username):
+            raise AssertionError("You cannot use symbols in your username!")
 
 
 class Post(TimestampMixin, db.Model):

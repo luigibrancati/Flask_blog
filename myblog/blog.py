@@ -53,7 +53,7 @@ def edit_profile(user_id):
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('blog.user',
-                                username=form.username.data))
+                                user_id=user.id))
     elif request.method == 'GET':
         form.username.data = user.username
         form.email.data = user.email
