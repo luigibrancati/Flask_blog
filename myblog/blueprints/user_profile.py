@@ -25,9 +25,10 @@ def user_profile(user_id):
 
 
 # Edit profile form
+@bp.route('/user/<user_id>/edit?changepic=<change_pic>', methods=('GET', 'POST'))
 @bp.route('/user/<user_id>/edit', methods=('GET', 'POST'))
 @login_required
-def edit_user_profile(user_id):
+def edit_user_profile(user_id, change_pic=False):
     """Edits the user profile."""
     form = EditProfileForm(current_user.username, current_user.email)
     user = get_user(user_id)
@@ -46,4 +47,8 @@ def edit_user_profile(user_id):
         form.username.data = user.username
         form.email.data = user.email
         # form.about_me.data = user.about_me
+
+    # Check if Change Pic button has been pressed
+    if change_pic:
+        return render_template('blog/edit_user_profile_changepic.html', user=user, form=form)
     return render_template('blog/edit_user_profile.html', user=user, form=form)

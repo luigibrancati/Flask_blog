@@ -5,24 +5,30 @@
 		<div class="user">
 			<div class="user_thumbnail">
 				<img src="{{ user.avatar(128) }}">
-				{% if current_user.id == user.id %}
-					<form action="{{ url_for('user_profile.edit_user_profile', user_id=user.id) }}"><button type="submit">Edit Profile</button></form>
-				{% endif %}
+				{% block userbutton %}
+					{% if current_user.id == user.id %}
+						<form action="{{ url_for('user_profile.edit_user_profile', user_id=user.id) }}">
+							<button type="submit">Edit Profile</button>
+						</form>
+					{% endif %}
+				{% endblock %}
 			</div>
 			<div class="user_info">
-				<h1>{% block title %}{{ user.username }}{% endblock %}</h1>
-				<!-- {% if user.about_me %}
-					<p><b>About me:</b> {{user.about_me}}</p>
-				{% endif %} -->
-				{% if user.email %}
-					<p><b>Email:</b> {{user.email}}</p>
-				{% endif %}
-				{% if user.created %}
-					<p><b>Created:</b> {{user.created.strftime('%d-%m-%Y %H:%M')}}</p>
-				{% endif %}
-				{% if user.last_seen %}
-					<p><b>Last seen on:</b> {{user.last_seen.strftime('%d-%m-%Y %H:%M')}}</p>
-				{% endif %}
+				{% block userinfo %}
+					<h1>{% block title %}{{ user.username }}{% endblock %}</h1>
+					<!-- {% if user.about_me %}
+						<p><b>About me:</b> {{user.about_me}}</p>
+					{% endif %} -->
+					{% if user.email %}
+						<p><b>Email:</b> {{user.email}}</p>
+					{% endif %}
+					{% if user.created %}
+						<p><b>Created:</b> {{user.created.strftime('%d-%m-%Y %H:%M')}}</p>
+					{% endif %}
+					{% if user.last_seen %}
+						<p><b>Last seen on:</b> {{user.last_seen.strftime('%d-%m-%Y %H:%M')}}</p>
+					{% endif %}
+				{% endblock %}
 			</div>
 		</div>
 	</header>

@@ -1,34 +1,34 @@
-{% extends "base.html" %}
+{% extends "blog/user_profile.html" %}
+
 {% block title %}
 	Edit profile - {{ user.username }}
 {% endblock %}
-{% block header %}
-	<header>
-		<form method="post">
-			{{ form.hidden_tag() }}
-			<div class="user">
-				<div class="user_thumbnail">
-					<img src="{{ user.avatar(128) }}">
-					<p><form action="https://www.gravatar.com/"><button type="submit">Change Pic</button></form></p>
-				</div>
-				<div class="user_info">
-					<p>
-						{{ form.username.label }}<br>
-						{{ form.username(size=32) }}<br>
-						{% for error in form.username.errors %}
-							<span class="error">[{{error}}]</span>
-						{% endfor %}
-					</p>
-					<p>
-						{{ form.email.label }}<br>
-						{{ form.email(size=32) }}<br>
-						{% for error in form.email.errors %}
-							<span class="error">[{{error}}]</span>
-						{% endfor %}
-					</p>
-					<p>{{ form.submit() }}</p>
-				</div>
-			</div>
-		</form>
-	</header>
+
+{% block userbutton %}
+	<form action="{{ url_for('user_profile.edit_user_profile', user_id=user.id, change_pic=True) }}">
+		<button type="submit">Change Pic</button>
+	</form>
 {% endblock %}
+
+{% block userinfo %}
+	<form method="post">
+		{{ form.hidden_tag() }}
+		<p>
+			{{ form.username.label }}<br>
+			{{ form.username(size=32) }}<br>
+			{% for error in form.username.errors %}
+				<span class="error">[{{error}}]</span>
+			{% endfor %}
+		</p>
+		<p>
+			{{ form.email.label }}<br>
+			{{ form.email(size=32) }}<br>
+			{% for error in form.email.errors %}
+				<span class="error">[{{error}}]</span>
+			{% endfor %}
+		</p>
+		<p>{{ form.submit() }}</p>
+	</form>
+{% endblock %}
+
+{% block content %}{% endblock %}
