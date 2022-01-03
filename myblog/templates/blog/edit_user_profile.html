@@ -5,8 +5,7 @@
 {% endblock %}
 
 {% block userbutton %}
-	<form action="https://www.gravatar.com/" method='get'>
-		{{ form.hidden_tag() }}
+	<form action="{{ url_for('user_profile.edit_user_profile', user_id=user.id, change_pic=True) }}">
 		<button type="submit">Change Pic</button>
 	</form>
 {% endblock %}

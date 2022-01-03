@@ -7,7 +7,9 @@
 				<img src="{{ user.avatar(128) }}">
 				{% block userbutton %}
 					{% if current_user.id == user.id %}
-						<form action="{{ url_for('user_profile.edit_user_profile', user_id=user.id) }}"><button type="submit">Edit Profile</button></form>
+						<form action="{{ url_for('user_profile.edit_user_profile', user_id=user.id) }}">
+							<button type="submit">Edit Profile</button>
+						</form>
 					{% endif %}
 				{% endblock %}
 			</div>

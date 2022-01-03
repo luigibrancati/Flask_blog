@@ -1,0 +1,13 @@
+{% extends "blog/edit_user_profile.html" %}
+
+{% block userbutton %}
+	<form action="https://www.gravatar.com/" method='get'>
+		<div id='button_pressed'>
+			<button type="submit">Change Pic</button></br>
+			<span>
+				The profile pictures are provided by the <a href="https://www.gravatar.com/">Gravatar</a> service.
+				Press again the button to visit the website.
+			</span>
+		</div>
+	</form>
+{% endblock %}

@@ -9,6 +9,7 @@
 
 .user_thumbnail {
 	align-items: center;
+	max-width: min-content;
 }
 
 .user_info {
@@ -28,4 +29,9 @@
 
 #userpage_header {
 	border-bottom: 16px solid #eee;
+}
+
+#button_pressed {
+	background-color: #eee;
+	font-size: 8pt;
 }
