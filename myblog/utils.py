@@ -56,6 +56,7 @@ def get_comment(comment_id: str, check_author=True) -> Comment:
 
 
 def get_user(user_id: str) -> User:
+    """Get a user by user id."""
     return User.query.filter_by(id=user_id).first_or_404()
 
 
@@ -68,6 +69,7 @@ def get_all_comments(post_id: str) -> list:
 
 
 def get_mentioned_users(comment_text: str) -> list:
+    """Gets the users tagged, returns a list of users."""
     mention_regex = '@[0-9a-zA-Z]+'
     user_names = [m[1:] for m in re.compile(mention_regex).findall(comment_text)]
     tagged_users = [User.query.filter_by(username=un).first() for un in user_names]

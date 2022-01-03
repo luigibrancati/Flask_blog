@@ -18,6 +18,10 @@
 	padding: 0 0.6em;
 }
 
+.user_info p input {
+	margin: 0;
+}
+
 .user a {
 	text-decoration: none;
 }
