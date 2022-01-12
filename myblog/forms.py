@@ -5,7 +5,6 @@ from wtforms.validators import DataRequired, ValidationError, Email,\
                                EqualTo, Length
 from myblog.models import User, Post
 from myblog.config import POST_MAX_LEN, BODY_MIN_LEN
-from myblog.models import User
 
 
 class LoginForm(FlaskForm):
