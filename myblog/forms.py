@@ -71,6 +71,7 @@ class CreatePostForm(FlaskForm):
                         validators=[DataRequired(), Length(min=0, max=120)])
     body = TextAreaField('Body',
                          validators=[DataRequired(), Length(min=0, max=POST_MAX_LEN)])
+    private = BooleanField('Private')
     submit = SubmitField('Submit')
 
     def validate_title(self, title):

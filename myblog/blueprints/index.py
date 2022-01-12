@@ -9,5 +9,5 @@ bp = Blueprint('index', __name__)
 @bp.route('/')
 def index():
     """Render the main index."""
-    posts = Post.query.order_by(Post.created_timestamp.desc()).all()
+    posts = Post.query.filter_by(status='public').order_by(Post.created_timestamp.desc()).all()
     return render_template('blog/index.html', posts=posts)
