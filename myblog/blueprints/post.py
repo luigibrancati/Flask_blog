@@ -34,6 +34,8 @@ def create_post():
 def show_post(post_id):
     """Render a post thread."""
     post = get_post(post_id, check_author=False)
+    if post.private and current_user != post.author:
+        return render_template('error/404.html')
     post.body = format_markdown(post.body)
     comments = get_all_comments(post_id)
     comments.sort(key=lambda c: c.created_timestamp)
