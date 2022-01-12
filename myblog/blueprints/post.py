@@ -20,7 +20,7 @@ def create_post():
         post = Post(
             title=form.title.data,
             body=form.body.data,
-            status=('private' if form.private.data else 'public'),
+            private=form.private.data,
             author=current_user
         )
         db.session.add(post)
@@ -54,7 +54,7 @@ def edit_post(post_id):
     elif form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
-        post.status = ('private' if form.private.data else 'public')
+        post.private = form.private.data
         post.updated_timestmap = datetime.utcnow()
         db.session.commit()
         flash("Your changes have been saved.")
@@ -62,7 +62,7 @@ def edit_post(post_id):
     elif request.method == "GET":
         form.title.data = post.title
         form.body.data = post.body
-        form.private.data = (True if post.status == 'private' else False)
+        form.private.data = post.private
     return render_template('blog/create_post.html', form=form, post=post)
 
 
