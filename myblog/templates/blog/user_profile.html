@@ -34,26 +34,29 @@
 			<div class="tab">
 				<button class="tablinks" onclick="activateTab(event, 'user_post_list')" id="PostButton">Posts</a>
 				<button class="tablinks" onclick="activateTab(event, 'user_comment_list')">Comments</a>
+				<button class="tablinks" onclick="activateTab(event, 'user_private_list')">Privates</a>
 			</div>
 			<div>
 				<div id="user_post_list" class="tabcontent">
 					<div class="post_list">
 						<ul>
 							{% for post in posts %}
-								<li>
-									{% if loop.index%2==0 %}
-										<div class="post post_snippet dark">
-											{% include "blog/snippet_post.html"%}
-										</div>
-									{% else %}
-										<div class="post post_snippet">
-											{% include "blog/snippet_post.html"%}
-										</div>
-									{% endif %}
-									{% if not loop.last %}
-										<hr>
-									{% endif %}
-								</li>
+								{% if not post.private %}
+									<li>
+										{% if loop.index%2==0 %}
+											<div class="post post_snippet dark">
+												{% include "blog/snippet_post.html"%}
+											</div>
+										{% else %}
+											<div class="post post_snippet">
+												{% include "blog/snippet_post.html"%}
+											</div>
+										{% endif %}
+										{% if not loop.last %}
+											<hr>
+										{% endif %}
+									</li>
+								{% endif %}
 							{% endfor %}
 						<ul>
 					</div>
@@ -76,6 +79,30 @@
 								</li>
 							{% endfor %}
 						</ul>
+					</div>
+				</div>
+				<div id="user_private_list" class="tabcontent">
+					<div class="post_list">
+						<ul>
+							{% for post in posts %}
+								{% if post.private %}
+									<li>
+										{% if loop.index%2==0 %}
+											<div class="post post_snippet dark">
+												{% include "blog/snippet_post.html"%}
+											</div>
+										{% else %}
+											<div class="post post_snippet">
+												{% include "blog/snippet_post.html"%}
+											</div>
+										{% endif %}
+										{% if not loop.last %}
+											<hr>
+										{% endif %}
+									</li>
+								{% endif %}
+							{% endfor %}
+						<ul>
 					</div>
 				</div>
 			</div>
