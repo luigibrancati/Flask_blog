@@ -28,6 +28,7 @@
 		<p>
 			{{ form.body.label }}<br>
 			{{ form.body(cols=50, rows=4) }}<br>
+			{{ form.private.label }} {{ form.private() }}<br>
 			{% for error in form.body.errors %}
 				<span class="error">[{{ error }}]</span>
 			{% endfor %}

@@ -17,9 +17,12 @@ def create_post():
     """Create new post."""
     form = CreatePostForm()
     if form.validate_on_submit():
-        post = Post(title=form.title.data,
-                    body=form.body.data,
-                    author=current_user)
+        post = Post(
+            title=form.title.data,
+            body=form.body.data,
+            private=form.private.data,
+            author=current_user
+        )
         db.session.add(post)
         db.session.commit()
         flash('Post created.')
@@ -31,6 +34,8 @@ def create_post():
 def show_post(post_id):
     """Render a post thread."""
     post = get_post(post_id, check_author=False)
+    if post.private and current_user != post.author:
+        return render_template('error/404.html')
     post.body = format_markdown(post.body)
     comments = get_all_comments(post_id)
     comments.sort(key=lambda c: c.created_timestamp)
@@ -51,6 +56,7 @@ def edit_post(post_id):
     elif form.validate_on_submit():
         post.title = form.title.data
         post.body = form.body.data
+        post.private = form.private.data
         post.updated_timestmap = datetime.utcnow()
         db.session.commit()
         flash("Your changes have been saved.")
@@ -58,6 +64,7 @@ def edit_post(post_id):
     elif request.method == "GET":
         form.title.data = post.title
         form.body.data = post.body
+        form.private.data = post.private
     return render_template('blog/create_post.html', form=form, post=post)
 
 

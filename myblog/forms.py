@@ -4,8 +4,7 @@ from wtforms import StringField, TextAreaField, PasswordField,\
 from wtforms.validators import DataRequired, ValidationError, Email,\
                                EqualTo, Length
 from myblog.models import User, Post
-from myblog.config import POST_LEN
-from myblog.models import User
+from myblog.config import POST_MAX_LEN, BODY_MIN_LEN
 
 
 class LoginForm(FlaskForm):
@@ -71,7 +70,8 @@ class CreatePostForm(FlaskForm):
     title = StringField('Title',
                         validators=[DataRequired(), Length(min=0, max=120)])
     body = TextAreaField('Body',
-                         validators=[DataRequired(), Length(min=0, max=POST_LEN)])
+                         validators=[DataRequired(), Length(min=0, max=POST_MAX_LEN)])
+    private = BooleanField('Private')
     submit = SubmitField('Submit')
 
     def validate_title(self, title):
@@ -79,23 +79,19 @@ class CreatePostForm(FlaskForm):
         if post is not None:
             raise ValidationError("Please use a different title.")
 
+    def validate_body(self, body):
+        if len(body.data) < BODY_MIN_LEN:
+            raise ValidationError("Body must be at least 50 characters long.")
 
-class EditPostForm(FlaskForm):
-    title = StringField('Title',
-                        validators=[DataRequired(), Length(min=0, max=120)])
-    body = TextAreaField('Body',
-                         validators=[DataRequired(), Length(min=0, max=POST_LEN)])
-    submit = SubmitField('Submit')
 
+class EditPostForm(CreatePostForm):
     def __init__(self, original_title, *args, **kwargs):
-        super(EditPostForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.original_title = original_title
 
     def validate_title(self, title):
         if title.data != self.original_title:
-            post = Post.query.filter_by(title=self.title.data).first()
-            if post is not None:
-                raise ValidationError("Please use a different title.")
+            super().validate_title(title)
 
 
 class CreateCommentForm(FlaskForm):
@@ -103,6 +99,5 @@ class CreateCommentForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
-class EditCommentForm(FlaskForm):
-    body = TextAreaField('Body', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+class EditCommentForm(CreateCommentForm):
+    pass
