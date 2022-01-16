@@ -8,7 +8,7 @@ from myblog.forms import CreateCommentForm, EditCommentForm
 from flask_login import login_required, current_user
 from ..utils import format_markdown, get_comment, get_post,\
                    get_user, get_all_comments, get_mentioned_users
-
+from smtplib import SMTPAuthenticationError
 
 bp = Blueprint('comment', __name__)
 
@@ -28,23 +28,26 @@ def create_comment(post_id):
         flash('Comment created.')
         # Send mail notification to OP
         op = get_user(post.user_id)
-        if comment.user_id != op.id:
-            OpCommentNotificationEmailSender\
-                .build_message(
-                    url_for('post.show_post', post_id=post.id, _external=True),
-                    comment.id,
-                    op,
-                    current_user)\
-                .send_mail()
-        # Send emails to tagged users
-        for user in get_mentioned_users(comment.body):
-            TagNotificationEmailSender\
-                .build_message(
-                    url_for('post.show_post', post_id=post.id, _external=True),
-                    comment.id,
-                    user,
-                    current_user)\
-                .send_mail()
+        try:
+            if comment.user_id != op.id:
+                OpCommentNotificationEmailSender\
+                    .build_message(
+                        url_for('post.show_post', post_id=post.id, _external=True),
+                        comment.id,
+                        op,
+                        current_user)\
+                    .send_mail()
+            # Send emails to tagged users
+            for user in get_mentioned_users(comment.body):
+                TagNotificationEmailSender\
+                    .build_message(
+                        url_for('post.show_post', post_id=post.id, _external=True),
+                        comment.id,
+                        user,
+                        current_user)\
+                    .send_mail()
+        except SMTPAuthenticationError:
+            print("Not able to send notifications.")
         return redirect(url_for('post.show_post', post_id=post_id))
     comments = get_all_comments(post_id)
     return render_template('blog/create_comment.html', form=form, post=post,
