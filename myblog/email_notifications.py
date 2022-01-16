@@ -4,16 +4,19 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from myblog.models import User
 from abc import ABC, abstractmethod
+from flask import current_app
+from .config import SMTP_SERVER, SERVER_EMAIL, PASSWORD, PORT
 
 
 class EmailSender(ABC):
-    smtp_server = "smtp.gmail.com"
-    port = 465
-    sender_email = "blblog.notification@gmail.com"
+    smtp_server = SMTP_SERVER
+    port = PORT
+    sender_email = SERVER_EMAIL
+    password = PASSWORD
+    TYPE = None
 
     def __init__(self):
         self.context = ssl.create_default_context()
-        self.password = "Vaffanculostronzo94"
         self.message = MIMEMultipart("alternative")
         self.message["From"] = EmailSender.sender_email
 
@@ -21,7 +24,9 @@ class EmailSender(ABC):
         with smtplib.SMTP_SSL(EmailSender.smtp_server,
                               EmailSender.port,
                               context=self.context) as server:
-            server.login(EmailSender.sender_email, self.password)
+            current_app.logger.info("Logging to email server")
+            server.login(EmailSender.sender_email, EmailSender.password)
+            current_app.logger.info(f"Sending {self.TYPE} email notification to {self.message['To']}")
             server.sendmail(EmailSender.sender_email,
                             self.message["To"],
                             self.message.as_string())
@@ -45,6 +50,7 @@ class EmailSender(ABC):
 
 
 class OpCommentNotificationEmailSender(EmailSender):
+    TYPE = 'OP'
 
     @classmethod
     def build_message(cls, post_url: str, comment_id: str,
@@ -74,6 +80,7 @@ class OpCommentNotificationEmailSender(EmailSender):
 
 
 class TagNotificationEmailSender(EmailSender):
+    TYPE = 'TAGGED'
 
     @classmethod
     def build_message(cls, post_url: str, comment_id: str,

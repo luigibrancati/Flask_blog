@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, redirect, render_template, request, url_for
+    Blueprint, flash, redirect, render_template, request, url_for, current_app
 )
 from flask_login import current_user, login_user, logout_user
 from myblog import db
@@ -19,9 +19,11 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
+        current_app.logger.info(f"New user created")
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
+        current_app.logger.info(f"User {user.id} has been added to the database")
         flash('You are now registered.')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
