@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask import Blueprint, flash, redirect,\
-                  render_template, request, url_for
+                  render_template, request, url_for,\
+                  current_app
 from myblog import db
 from myblog.email_notifications import OpCommentNotificationEmailSender, TagNotificationEmailSender
 from myblog.models import Comment
@@ -23,13 +24,18 @@ def create_comment(post_id):
     if form.validate_on_submit():
         comment = Comment(body=form.body.data, author=current_user,
                           original_post=post)
+        current_app.logger.info(f"New comment created")
         db.session.add(comment)
         db.session.commit()
+        current_app.logger.info(f"Comment {comment.id} pushed to database")
+        current_app.logger.info(f"Comment {comment.id} has been created by user {current_user.id}")
         flash('Comment created.')
         # Send mail notification to OP
         op = get_user(post.user_id)
         try:
+            current_app.logger.info(f"Sending notifications")
             if comment.user_id != op.id:
+                current_app.logger.info(f"Sending notification to OP")
                 OpCommentNotificationEmailSender\
                     .build_message(
                         url_for('post.show_post', post_id=post.id, _external=True),
@@ -38,6 +44,7 @@ def create_comment(post_id):
                         current_user)\
                     .send_mail()
             # Send emails to tagged users
+            current_app.logger.info(f"Sending notifications to tagged users")
             for user in get_mentioned_users(comment.body):
                 TagNotificationEmailSender\
                     .build_message(
@@ -46,8 +53,8 @@ def create_comment(post_id):
                         user,
                         current_user)\
                     .send_mail()
-        except SMTPAuthenticationError:
-            print("Not able to send notifications.")
+        except SMTPAuthenticationError as e:
+            current_app.logger.error("Not able to send notifications.\nError: {e}")
         return redirect(url_for('post.show_post', post_id=post_id))
     comments = get_all_comments(post_id)
     return render_template('blog/create_comment.html', form=form, post=post,
@@ -68,6 +75,7 @@ def edit_comment(comment_id):
         comment.body = form.body.data
         comment.updated_timestmap = datetime.utcnow()
         db.session.commit()
+        current_app.logger.info(f"Comment {comment.id} has been edited by user {current_user.id}")
         flash('Your changes have been made.')
         return redirect(url_for('post.show_post', post_id=post_id))
     elif request.method == "GET":
@@ -87,4 +95,5 @@ def delete_comment(comment_id):
     post_id = comment.original_post.id
     db.session.delete(comment)
     db.session.commit()
+    current_app.logger.info(f"Comment {comment.id} has been deleted by user {current_user.id}")
     return redirect(url_for('post.show_post', post_id=post_id))

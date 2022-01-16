@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask import Blueprint, flash, redirect,\
-                  render_template, request, url_for
+                  render_template, request, url_for,\
+                  current_app
 from myblog import db
 from myblog.models import Post
 from myblog.forms import CreatePostForm, EditPostForm
@@ -23,8 +24,11 @@ def create_post():
             private=form.private.data,
             author=current_user
         )
+        current_app.logger.info(f"New post created")
         db.session.add(post)
         db.session.commit()
+        current_app.logger.info(f"Post {post.id} pushed to database")
+        current_app.logger.info(f"Post {post.id} has been created by user {current_user.id}")
         flash('Post created.')
         return redirect(url_for('index.index'))
     return render_template('blog/create_post.html', form=form, post=None)
@@ -59,6 +63,7 @@ def edit_post(post_id):
         post.private = form.private.data
         post.updated_timestmap = datetime.utcnow()
         db.session.commit()
+        current_app.logger.info(f"Post {post.id} has been edited by user {current_user.id}")
         flash("Your changes have been saved.")
         return redirect(url_for('post.show_post', post_id=post_id))
     elif request.method == "GET":
@@ -78,4 +83,5 @@ def delete_post(post_id):
     for comment in comments:
         db.session.delete(comment)
     db.session.commit()
+    current_app.logger.info(f"Post {post.id} has been deleted by user {current_user.id}")
     return redirect(url_for('index.index'))
