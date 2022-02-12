@@ -11,6 +11,7 @@ from ..utils import format_markdown, get_comment, get_post,\
                    get_user, get_all_comments, get_mentioned_users
 from smtplib import SMTPAuthenticationError
 
+
 bp = Blueprint('comment', __name__)
 
 
@@ -24,7 +25,7 @@ def create_comment(post_id):
     if form.validate_on_submit():
         comment = Comment(body=form.body.data, author=current_user,
                           original_post=post)
-        current_app.logger.info(f"New comment created")
+        current_app.logger.info("New comment created")
         db.session.add(comment)
         db.session.commit()
         current_app.logger.info(f"Comment {comment.id} pushed to database")
@@ -33,9 +34,9 @@ def create_comment(post_id):
         # Send mail notification to OP
         op = get_user(post.user_id)
         try:
-            current_app.logger.info(f"Sending notifications")
+            current_app.logger.info("Sending notifications")
             if comment.user_id != op.id:
-                current_app.logger.info(f"Sending notification to OP")
+                current_app.logger.info("Sending notification to OP")
                 OpCommentNotificationEmailSender\
                     .build_message(
                         url_for('post.show_post', post_id=post.id, _external=True),
@@ -44,7 +45,7 @@ def create_comment(post_id):
                         current_user)\
                     .send_mail()
             # Send emails to tagged users
-            current_app.logger.info(f"Sending notifications to tagged users")
+            current_app.logger.info("Sending notifications to tagged users")
             for user in get_mentioned_users(comment.body):
                 TagNotificationEmailSender\
                     .build_message(
@@ -54,7 +55,7 @@ def create_comment(post_id):
                         current_user)\
                     .send_mail()
         except SMTPAuthenticationError as e:
-            current_app.logger.error("Not able to send notifications.\nError: {e}")
+            current_app.logger.error(f"Not able to send notifications.\nError: {e}")
         return redirect(url_for('post.show_post', post_id=post_id))
     comments = get_all_comments(post_id)
     return render_template('blog/create_comment.html', form=form, post=post,

@@ -15,17 +15,34 @@ login = LoginManager()
 def create_app(test_config=None):
     # Create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'myblog.sqlite'),
-    )
 
+    # LOGGER
+    if not os.path.exists('logs'):
+        os.mkdir('logs')
+    file_handler = RotatingFileHandler('logs/myblog.log',
+                                       maxBytes=10240,
+                                       backupCount=10)
+    file_handler.setFormatter(
+        logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
+    )
+    app.logger.addHandler(file_handler)
+    if app.debug:
+        app.logger.setLevel(logging.DEBUG)
+    else:
+        app.logger.setLevel(logging.INFO)
+    app.logger.info('myblog startup')
+
+    # CONFIG
     if test_config is None:
         # Load the instance config, if it exists, when not testing
+        app.logger.debug("Config from object")
         app.config.from_object(Config)
     else:
         # Load the test config if passed in
+        app.logger.debug("Config from test_config")
         app.config.from_mapping(test_config)
+
+    app.logger.debug(app.config)
 
     # Ensure the instance folder exists
     try:
@@ -63,19 +80,5 @@ def create_app(test_config=None):
     def internal_error(e):
         db.session.rollback()
         return render_template('error/500.html'), 500
-
-    if not app.debug:
-        if not os.path.exists('logs'):
-            os.mkdir('logs')
-        file_handler = RotatingFileHandler('logs/myblog.log',
-                                           maxBytes=10240,
-                                           backupCount=10)
-        file_handler.setFormatter(
-            logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
-        )
-        file_handler.setLevel(logging.INFO)
-        app.logger.addHandler(file_handler)
-        app.logger.setLevel(logging.INFO)
-        app.logger.info('myblog startup')
 
     return app
