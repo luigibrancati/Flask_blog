@@ -3,7 +3,7 @@ from markdown.extensions import fenced_code, codehilite, tables, Extension
 from markdown.inlinepatterns import InlineProcessor
 import markdown_katex
 from myblog.models import Post, Comment, User
-from flask import url_for
+from flask import url_for, current_app
 from werkzeug.exceptions import abort
 from flask_login import current_user
 import re
@@ -37,6 +37,10 @@ def format_markdown(text: str) -> str:
                                 tables.makeExtension(),
                                 markdown_katex.makeExtension(),
                                 TagExtension()])
+
+
+def is_admin() -> bool:
+    return (not current_user.is_anonymous) and (current_user.email in current_app.config["ADMINS"])
 
 
 def get_post(post_id: str) -> Post:

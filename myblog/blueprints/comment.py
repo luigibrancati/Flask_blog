@@ -8,7 +8,8 @@ from myblog.models import Comment
 from myblog.forms import CreateCommentForm, EditCommentForm
 from flask_login import login_required, current_user
 from ..utils import format_markdown, get_comment, get_post,\
-                   get_user, get_all_comments, get_mentioned_users
+                   get_user, get_all_comments, get_mentioned_users,\
+                   is_admin
 from smtplib import SMTPAuthenticationError
 from werkzeug.exceptions import abort
 
@@ -69,8 +70,7 @@ def edit_comment(comment_id):
     """Update a comment under a post."""
     with current_app.app_context():
         comment = get_comment(comment_id)
-        is_admin = (current_user.email in current_app.config["ADMINS"])
-        if current_user == comment.author or is_admin:
+        if current_user == comment.author or is_admin():
             # If the check above passes
             post_id = comment.original_post.id
             form = EditCommentForm()
@@ -99,8 +99,7 @@ def delete_comment(comment_id):
     """Delete a comment."""
     with current_app.app_context():
         comment = get_comment(comment_id)
-        is_admin = (current_user.email in current_app.config["ADMINS"])
-        if current_user == comment.author or is_admin:
+        if current_user == comment.author or is_admin():
             post_id = comment.original_post.id
             db.session.delete(comment)
             db.session.commit()

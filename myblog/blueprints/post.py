@@ -6,7 +6,7 @@ from myblog import db
 from myblog.models import Post
 from myblog.forms import CreatePostForm, EditPostForm
 from flask_login import login_required, current_user
-from ..utils import format_markdown, get_post, get_all_comments
+from ..utils import format_markdown, get_post, get_all_comments, is_admin
 from werkzeug.exceptions import abort
 
 
@@ -40,7 +40,6 @@ def show_post(post_id):
     """Render a post thread."""
     with current_app.app_context():
         post = get_post(post_id)
-        is_admin = (current_user.email in current_app.config["ADMINS"])
         if post.private and current_user != post.author:
             current_app.logger.warning(f"User {current_user.id} tried peeking post {post.id} which is private, but was bounced back")
             abort(404)
@@ -49,7 +48,7 @@ def show_post(post_id):
         comments.sort(key=lambda c: c.created_timestamp)
         for comment in comments:
             comment.body = format_markdown(comment.body)
-        return render_template('blog/show_post.html', post=post, comments=comments, is_admin=is_admin)
+        return render_template('blog/show_post.html', post=post, comments=comments, is_admin=is_admin())
 
 
 @bp.route('/post/<int:post_id>/edit', methods=('GET', 'POST'))
@@ -58,8 +57,7 @@ def edit_post(post_id):
     """Edit a post."""
     with current_app.app_context():
         post = get_post(post_id)
-        is_admin = (current_user.email in current_app.config["ADMINS"])
-        if current_user == post.author or is_admin:
+        if current_user == post.author or is_admin():
             form = EditPostForm(post.title)
             if form.validate_on_submit():
                 post.title = form.title.data
@@ -86,8 +84,7 @@ def delete_post(post_id):
     """Delete a post."""
     with current_app.app_context():
         post = get_post(post_id)
-        is_admin = (current_user.email in current_app.config["ADMINS"])
-        if current_user == post.author or is_admin:
+        if current_user == post.author or is_admin():
             for comment in get_all_comments(post_id):
                 db.session.delete(comment)
             db.session.delete(post)
