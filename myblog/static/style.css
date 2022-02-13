@@ -4,6 +4,13 @@ html {
 	padding: 1rem;
 }
 
+#feedback_form_link {
+	font-size: 8pt;
+	background: #eee;
+	margin: 0;
+	padding: 0.2em 0;
+}
+
 body {
 	max-width: 960px;
 	margin: 0 auto;
