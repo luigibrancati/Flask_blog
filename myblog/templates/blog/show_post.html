@@ -12,7 +12,7 @@
 				<div class="post_thumbnail">
 					<img src="{{ post.author.avatar(80) }}">
 					<div class="post_edit_button">
-						{% if current_user == post.author %}
+						{% if current_user == post.author or is_admin %}
 							<form action="{{ url_for('post.edit_post', post_id=post.id) }}"><button type="submit">Edit Post</button></form>
 						{% endif %}
 					</div>

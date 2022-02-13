@@ -1,7 +1,7 @@
 <div class="comment_thumbnail">
 	<img src="{{ comment.author.avatar(50) }}">
 	<div class="comment_edit_button">
-		{% if current_user == comment.author %}
+		{% if current_user == comment.author or is_admin %}
 			<form action="{{ url_for('comment.edit_comment', comment_id=comment.id) }}"><button type="submit">Edit</button></form>
 		{% endif %}
 	</div>

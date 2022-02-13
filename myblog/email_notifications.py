@@ -5,29 +5,29 @@ from email.mime.multipart import MIMEMultipart
 from myblog.models import User
 from abc import ABC, abstractmethod
 from flask import current_app
-from .config import SMTP_SERVER, SERVER_EMAIL, PASSWORD, PORT
 
 
 class EmailSender(ABC):
-    smtp_server = SMTP_SERVER
-    port = PORT
-    sender_email = SERVER_EMAIL
-    password = PASSWORD
     TYPE = None
 
     def __init__(self):
         self.context = ssl.create_default_context()
         self.message = MIMEMultipart("alternative")
-        self.message["From"] = EmailSender.sender_email
+        with current_app.app_context():
+            self.smtp_server = current_app.config["MAIL_SERVER"]
+            self.port = current_app.config["MAIL_PORT"]
+            self.sender_email = current_app.config["MAIL_USERNAME"]
+            self.password = current_app.config["MAIL_PASSWORD"]
+        self.message["From"] = self.sender_email
 
     def send_mail(self):
-        with smtplib.SMTP_SSL(EmailSender.smtp_server,
-                              EmailSender.port,
+        with smtplib.SMTP_SSL(self.smtp_server,
+                              self.port,
                               context=self.context) as server:
             current_app.logger.info("Logging to email server")
-            server.login(EmailSender.sender_email, EmailSender.password)
+            server.login(self.sender_email, self.password)
             current_app.logger.info(f"Sending {self.TYPE} email notification to {self.message['To']}")
-            server.sendmail(EmailSender.sender_email,
+            server.sendmail(self.sender_email,
                             self.message["To"],
                             self.message.as_string())
 
