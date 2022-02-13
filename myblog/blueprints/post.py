@@ -42,7 +42,8 @@ def show_post(post_id):
         post = get_post(post_id)
         is_admin = (current_user.email in current_app.config["ADMINS"])
         if post.private and current_user != post.author:
-            return render_template('error/404.html')
+            current_app.logger.warning(f"User {current_user.id} tried peeking post {post.id} which is private, but was bounced back")
+            abort(404)
         post.body = format_markdown(post.body)
         comments = get_all_comments(post_id)
         comments.sort(key=lambda c: c.created_timestamp)

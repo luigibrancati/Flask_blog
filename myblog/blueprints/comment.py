@@ -21,7 +21,7 @@ bp = Blueprint('comment', __name__)
 def create_comment(post_id):
     """Add a comment under a post. Also sends an email notification to original poster."""
     form = CreateCommentForm()
-    post = get_post(post_id, check_author=False)
+    post = get_post(post_id)
     post.body = format_markdown(post.body)
     if form.validate_on_submit():
         comment = Comment(body=form.body.data, author=current_user,
