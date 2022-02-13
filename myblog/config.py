@@ -7,8 +7,8 @@ BODY_MIN_LEN = 10
 
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or "b'4R\x1fa\xf29\xbd92\xd5\xfd\x04e\x1c\x86\x02'"
-    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') or 'sqlite:////home/luigi/Programmazione/python/Flask_blog/instance/app.db'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or "abc"
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') or '/'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
