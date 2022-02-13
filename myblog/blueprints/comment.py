@@ -10,6 +10,7 @@ from flask_login import login_required, current_user
 from ..utils import format_markdown, get_comment, get_post,\
                    get_user, get_all_comments, get_mentioned_users
 from smtplib import SMTPAuthenticationError
+from werkzeug.exceptions import abort
 
 
 bp = Blueprint('comment', __name__)
@@ -66,35 +67,45 @@ def create_comment(post_id):
 @login_required
 def edit_comment(comment_id):
     """Update a comment under a post."""
-    comment = get_comment(comment_id)
-    post_id = comment.original_post.id
-    form = EditCommentForm()
-    if form.validate_on_submit():
-        if current_user != comment.author:
-            flash("You can't edit a comment that is not yours!")
-            return redirect(url_for('post.show_post', post_id=post_id))
-        comment.body = form.body.data
-        comment.updated_timestmap = datetime.utcnow()
-        db.session.commit()
-        current_app.logger.info(f"Comment {comment.id} has been edited by user {current_user.id}")
-        flash('Your changes have been made.')
-        return redirect(url_for('post.show_post', post_id=post_id))
-    elif request.method == "GET":
-        form.body.data = comment.body
-    post = get_post(post_id, check_author=False)
-    post.body = format_markdown(post.body)
-    comments = get_all_comments(post_id)
-    return render_template('blog/create_comment.html', form=form, post=post,
-                           comments=comments, comment=comment)
+    with current_app.app_context():
+        comment = get_comment(comment_id)
+        is_admin = (current_user.email in current_app.config["ADMINS"])
+        if current_user == comment.author or is_admin:
+            # If the check above passes
+            post_id = comment.original_post.id
+            form = EditCommentForm()
+            if form.validate_on_submit():
+                comment.body = form.body.data
+                comment.updated_timestmap = datetime.utcnow()
+                db.session.commit()
+                current_app.logger.info(f"Comment {comment.id} has been edited by user {current_user.id}")
+                flash('Your changes have been made.')
+                return redirect(url_for('post.show_post', post_id=post_id))
+            elif request.method == "GET":
+                form.body.data = comment.body
+            post = get_post(post_id)
+            post.body = format_markdown(post.body)
+            comments = get_all_comments(post_id)
+            return render_template('blog/create_comment.html', form=form, post=post,
+                                comments=comments, comment=comment)
+        else:
+            current_app.logger.warning(f"User {current_user.id} attempted editing comment {comment.id}, but was bounced back")
+            abort(403)
 
 
 @bp.route('/comment/<int:comment_id>/delete', methods=('POST',))
 @login_required
 def delete_comment(comment_id):
     """Delete a comment."""
-    comment = get_comment(comment_id)
-    post_id = comment.original_post.id
-    db.session.delete(comment)
-    db.session.commit()
-    current_app.logger.info(f"Comment {comment.id} has been deleted by user {current_user.id}")
-    return redirect(url_for('post.show_post', post_id=post_id))
+    with current_app.app_context():
+        comment = get_comment(comment_id)
+        is_admin = (current_user.email in current_app.config["ADMINS"])
+        if current_user == comment.author or is_admin:
+            post_id = comment.original_post.id
+            db.session.delete(comment)
+            db.session.commit()
+            current_app.logger.info(f"Comment {comment.id} has been deleted by user {current_user.id}")
+            return redirect(url_for('post.show_post', post_id=post_id))
+        else:
+            current_app.logger.warning(f"User {current_user.id} attempted deleting comment {comment.id}, but was bounced back")
+            abort(403)

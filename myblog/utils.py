@@ -39,20 +39,14 @@ def format_markdown(text: str) -> str:
                                 TagExtension()])
 
 
-def get_post(post_id: str, check_author=True) -> Post:
+def get_post(post_id: str) -> Post:
     """Gets a post by post id."""
-    post = Post.query.filter_by(id=post_id).first_or_404()
-    if check_author and post.author.id != current_user.id:
-        abort(403)
-    return post
+    return Post.query.filter_by(id=post_id).first_or_404()
 
 
-def get_comment(comment_id: str, check_author=True) -> Comment:
+def get_comment(comment_id: str) -> Comment:
     """Get a comment by comment id."""
-    comment = Comment.query.filter_by(id=comment_id).first_or_404()
-    if check_author and comment.author.id != current_user.id:
-        abort(403)
-    return comment
+    return Comment.query.filter_by(id=comment_id).first_or_404()
 
 
 def get_user(user_id: str) -> User:
@@ -62,7 +56,7 @@ def get_user(user_id: str) -> User:
 
 def get_all_comments(post_id: str) -> list:
     """Get all comments under a post."""
-    get_post(post_id, check_author=False)
+    get_post(post_id)
     comments = Comment.query.filter_by(post_id=post_id)\
         .order_by(Comment.created_timestamp.desc()).all()
     return comments
