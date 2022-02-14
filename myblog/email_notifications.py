@@ -21,15 +21,17 @@ class EmailSender(ABC):
         self.message["From"] = self.sender_email
 
     def send_mail(self):
-        with smtplib.SMTP_SSL(self.smtp_server,
-                              self.port,
-                              context=self.context) as server:
+        with smtplib.SMTP_SSL(
+            self.smtp_server, self.port, context=self.context
+        ) as server:
             current_app.logger.info("Logging to email server")
             server.login(self.sender_email, self.password)
-            current_app.logger.info(f"Sending {self.TYPE} email notification to {self.message['To']}")
-            server.sendmail(self.sender_email,
-                            self.message["To"],
-                            self.message.as_string())
+            current_app.logger.info(
+                f"Sending {self.TYPE} email notification to {self.message['To']}"
+            )
+            server.sendmail(
+                self.sender_email, self.message["To"], self.message.as_string()
+            )
 
     def add_plain_message(self, text: str):
         self.message.attach(MIMEText(text, "plain"))
@@ -50,15 +52,16 @@ class EmailSender(ABC):
 
 
 class OpCommentNotificationEmailSender(EmailSender):
-    TYPE = 'OP'
+    TYPE = "OP"
 
     @classmethod
-    def build_message(cls, post_url: str, comment_id: str,
-                      receiver: User, commenter: User):
+    def build_message(
+        cls, post_url: str, comment_id: str, receiver: User, commenter: User
+    ):
         obj = cls()
         obj.add_receiver_email(receiver.email)
         obj.add_subject("Comment notification")
-        post_url = post_url + f'#comment_{comment_id}'
+        post_url = post_url + f"#comment_{comment_id}"
         text = f"""\
         Hi {receiver.username},
         User {commenter.username} commented on this post: {post_url}.
@@ -80,15 +83,14 @@ class OpCommentNotificationEmailSender(EmailSender):
 
 
 class TagNotificationEmailSender(EmailSender):
-    TYPE = 'TAGGED'
+    TYPE = "TAGGED"
 
     @classmethod
-    def build_message(cls, post_url: str, comment_id: str,
-                      tagged: User, tagger: User):
+    def build_message(cls, post_url: str, comment_id: str, tagged: User, tagger: User):
         obj = cls()
         obj.add_receiver_email(tagged.email)
         obj.add_subject("Mention notification")
-        post_url = post_url + f'#comment_{comment_id}'
+        post_url = post_url + f"#comment_{comment_id}"
         text = f"""\
         Hi {tagged.username},
         User {tagger.username} mentioned you when commenting on this post: {post_url}.

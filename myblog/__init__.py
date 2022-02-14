@@ -17,13 +17,15 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
 
     # LOGGER
-    if not os.path.exists('logs'):
-        os.mkdir('logs')
-    file_handler = RotatingFileHandler('logs/myblog.log',
-                                       maxBytes=10240,
-                                       backupCount=10)
+    if not os.path.exists("logs"):
+        os.mkdir("logs")
+    file_handler = RotatingFileHandler(
+        "logs/myblog.log", maxBytes=10240, backupCount=10
+    )
     file_handler.setFormatter(
-        logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]')
+        logging.Formatter(
+            "%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]"
+        )
     )
     if app.debug:
         file_handler.setLevel(logging.DEBUG)
@@ -31,7 +33,7 @@ def create_app(test_config=None):
         file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
     app.logger.setLevel(logging.INFO)
-    app.logger.info('myblog startup')
+    app.logger.info("myblog startup")
 
     # CONFIG
     if test_config is None:
@@ -54,33 +56,40 @@ def create_app(test_config=None):
     db.init_app(app)
     migrate = Migrate(app, db)
     login.init_app(app)
-    login.login_view = 'auth.login'
+    login.login_view = "auth.login"
 
     from . import db_commands
+
     db_commands.init_commands(app)
 
     from .blueprints import auth, comment, index, post, user_profile, feedback_form
+
     app.register_blueprint(auth.bp)
     app.register_blueprint(index.bp)
     app.register_blueprint(user_profile.bp)
     app.register_blueprint(post.bp)
     app.register_blueprint(comment.bp)
     app.register_blueprint(feedback_form.bp)
-    app.add_url_rule('/', endpoint='index')
+    app.add_url_rule("/", endpoint="index")
 
     from . import models
+
     @app.shell_context_processor
     def make_shell_context():
-        return {'db': db, 'User': models.User, 'Post': models.Post,
-                'Comment': models.Comment}
+        return {
+            "db": db,
+            "User": models.User,
+            "Post": models.Post,
+            "Comment": models.Comment,
+        }
 
     @app.errorhandler(404)
     def not_found_error(e):
-        return render_template('error/404.html'), 404
+        return render_template("error/404.html"), 404
 
     @app.errorhandler(500)
     def internal_error(e):
         db.session.rollback()
-        return render_template('error/500.html'), 500
+        return render_template("error/500.html"), 500
 
     return app

@@ -5,12 +5,12 @@ from myblog import db
 
 
 def get_db():
-    if 'db' not in g:
+    if "db" not in g:
         g.db = db
     return g.db
 
 
-@click.command('create-db')
+@click.command("create-db")
 @with_appcontext
 def createdb_command():
     """Clear the existing data and create new tables"""
