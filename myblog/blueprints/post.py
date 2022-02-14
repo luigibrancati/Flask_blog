@@ -17,22 +17,27 @@ bp = Blueprint('post', __name__)
 @login_required
 def create_post():
     """Create new post."""
-    form = CreatePostForm()
-    if form.validate_on_submit():
-        post = Post(
-            title=form.title.data,
-            body=form.body.data,
-            private=form.private.data,
-            author=current_user
-        )
-        current_app.logger.info("New post created")
-        db.session.add(post)
-        db.session.commit()
-        current_app.logger.info(f"Post {post.id} pushed to database")
-        current_app.logger.info(f"Post {post.id} has been created by user {current_user.id}")
-        flash('Post created.')
-        return redirect(url_for('index.index'))
-    return render_template('blog/create_post.html', form=form, post=None)
+    if is_admin():
+        current_app.logger.info("An admin started creating a new post")
+        form = CreatePostForm()
+        if form.validate_on_submit():
+            post = Post(
+                title=form.title.data,
+                body=form.body.data,
+                private=form.private.data,
+                author=current_user
+            )
+            current_app.logger.info("New post created")
+            db.session.add(post)
+            db.session.commit()
+            current_app.logger.info(f"Post {post.id} pushed to database")
+            current_app.logger.info(f"Post {post.id} has been created by user {current_user.id}")
+            flash('Post created.')
+            return redirect(url_for('index.index'))
+        return render_template('blog/create_post.html', form=form, post=None)
+    else:
+        current_app.logger.warning(f"User {current_user.id} attempted creating a post, but was bounced back")
+        abort(500)
 
 
 @bp.route('/post/<int:post_id>', methods=('GET',))
