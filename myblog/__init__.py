@@ -59,12 +59,13 @@ def create_app(test_config=None):
     from . import db_commands
     db_commands.init_commands(app)
 
-    from .blueprints import auth, comment, index, post, user_profile
+    from .blueprints import auth, comment, index, post, user_profile, feedback_form
     app.register_blueprint(auth.bp)
     app.register_blueprint(index.bp)
     app.register_blueprint(user_profile.bp)
     app.register_blueprint(post.bp)
     app.register_blueprint(comment.bp)
+    app.register_blueprint(feedback_form.bp)
     app.add_url_rule('/', endpoint='index')
 
     from . import models
