@@ -5,8 +5,11 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 POST_MAX_LEN = 1000000
 BODY_MIN_LEN = 10
-FEEDBACK_FORM_PREFILL_LINK = "https://docs.google.com/forms/d/e/1FAIpQLSeexmCZ8eUOiJ9M4eu6iTvMl79vggOVhEBm71BqLvd1aEsuJA/viewform?usp=pp_url&entry.1084124769={}&entry.169251362={}"
+FEEDBACK_FORM_PREFILL_LINK = os.environ.get("FORM_URL")
 
+_admins = os.environ.get("ADMINS")
+if _admins:
+    _admins = _admins.split(',')
 
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY") or "abc"
@@ -17,4 +20,4 @@ class Config:
     MAIL_USE_TLS = os.environ.get("MAIL_USE_TLS") is not None
     MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
-    ADMINS = os.environ.get("ADMINS").split(",")
+    ADMINS = _admins

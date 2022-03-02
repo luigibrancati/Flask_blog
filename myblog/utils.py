@@ -4,7 +4,6 @@ from markdown.inlinepatterns import InlineProcessor
 import markdown_katex
 from myblog.models import Post, Comment, User
 from flask import url_for, current_app
-from werkzeug.exceptions import abort
 from flask_login import current_user
 import re
 import xml.etree.ElementTree as etree
